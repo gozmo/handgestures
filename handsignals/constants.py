@@ -12,10 +12,20 @@ class Labels:
     none = "none"
     
     @staticmethod
+    def get_labels():
+        return [Labels.none, Labels.ok, Labels.metal, Labels.victory]
+
+    @staticmethod
     def label_to_int(label):
-        __labels = [Labels.none, Labels.ok, Labels.metal, Labels.victory]
+        __labels = Labels.get_labels()
         int_label = __labels.index(label)
         return int_label 
+
+    @staticmethod
+    def int_to_label(index):
+        __labels = Labels.get_labels()
+        return __labels[index] 
+
 
 class TFRecord:
     IMAGE_FEATURE_DESCRIPTION = \

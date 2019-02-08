@@ -51,7 +51,7 @@ class ImageDataset:
 
     def __read_image(self, filepath):
         image = cv2.imread(filepath)
-        image_resized = cv2.resize(image, (11,11))
+        image_resized = cv2.resize(image, (320,240))
         image_transposed = image_resized.transpose(2,1,0)
         normalized_image = image_transposed/ 255
         return normalized_image

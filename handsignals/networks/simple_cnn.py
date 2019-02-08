@@ -5,6 +5,7 @@ from torch.utils.data import DataLoader
 from handsignals.networks.train_network import train_model
 from torch import nn
 import torch
+import numpy as np
 
 class ConvNet:
     def __init__(self, num_classes):
@@ -12,7 +13,7 @@ class ConvNet:
         self.cnn_model.double()
 
 
-    def train(self, dataset, epochs=100):
+    def train(self, dataset, epochs=25):
         dataloader = DataLoader(dataset, batch_size=64, shuffle=True)
         optimizer = Adam(self.cnn_model.parameters(),
                 lr=0.001)
@@ -22,10 +23,12 @@ class ConvNet:
                 loss,
                 optimizer,
                 epochs)
-        self.cnn_model = trained_model
+        self.cnn_model, _ = trained_model
 
     def classify(self, image):
-        pass
+        image = np.asarray([image])
+        image_torch = torch.from_numpy(image)
+        return self.cnn_model(image_torch)
 
 class ConvNetModel(nn.Module):
     def __init__(self, num_classes=10):
@@ -40,7 +43,7 @@ class ConvNetModel(nn.Module):
                 nn.BatchNorm2d(32),
                 nn.ReLU(),
                 nn.MaxPool2d(kernel_size=2, stride=2))
-        self.fc = nn.Linear(128, num_classes)
+        self.fc = nn.Linear(153600, num_classes)
 
     def forward(self, x):
         out = self.layer1(x)

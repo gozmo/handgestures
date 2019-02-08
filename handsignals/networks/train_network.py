@@ -28,7 +28,6 @@ def train_model(model, dataloader, criterion, optimizer, num_epochs=25, is_incep
             running_corrects = 0
 
             for batch in dataloader:
-                print("batch")
 
                 images = batch["image"]
                 labels = batch["label"]
@@ -46,7 +45,6 @@ def train_model(model, dataloader, criterion, optimizer, num_epochs=25, is_incep
                 with torch.set_grad_enabled(phase == 'train'):
                     outputs = model(image_input)
                     loss = criterion(outputs, labels_input)
-                    print(loss)
 
                     _, preds = torch.max(outputs, 1)
 
