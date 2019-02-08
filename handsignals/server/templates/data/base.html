@@ -1,0 +1,13 @@
+{% extends "base.html" %} 
+
+{% block content %}
+<div> <a href="/data/show">Show</a>
+      <a href="/data/annotate">Annotate</a>
+      <a href="/data/aided_annotate">Aided Annotate</a>
+      <a href="/data/ar">AR</a>
+      <a href="/data/al">AL</a>
+      <a href="/data/labels">Labels</a>
+</div>
+<hr>
+        {% block inner_content %}{% endblock %}
+{% endblock %}

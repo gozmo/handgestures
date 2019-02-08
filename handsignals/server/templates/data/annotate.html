@@ -1,0 +1,22 @@
+{% extends "data/base.html" %}
+
+{% block inner_content %}
+    {% for image in images %}
+        <a class="image" href="{{image.src}}" style="width: {{ image.width }}px; height: {{ image.height }}px">
+            <img src={{image.src}} width="{{ image.width }}" height="{{ image.height }}" />
+        </a>
+
+    <form action="" method="POST" onsubmit="" name={{image.src}}>
+    {% for label in labels %}
+            <p>
+        {% if label == "none" %}
+        <input type="radio" name={{image.src}} id={{label}} value={{label}} checked> {{label}} 
+        {% else %}
+        <input type="radio" name={{image.src}} id={{label}} value={{label}}>         {{label}}
+        {% endif %}
+            </p>
+    {% endfor %}
+        <p><input type=submit value=Next></p>
+    </form>
+    {% endfor %}
+{% endblock %}
