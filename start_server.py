@@ -9,6 +9,7 @@ app = Flask(__name__, template_folder="handsignals/server/templates")
 
 @app.route('/<path:filename>')
 def image(filename):
+    print("route_image", filename)
     return main.read_images(filename, request)
 
 @app.route('/capture', methods=["GET", "POST"])

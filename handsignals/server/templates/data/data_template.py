@@ -29,13 +29,13 @@ def render_annotate(request):
             else:
                 height = min(h, HEIGHT)
                 width = height*aspect
+            print("render_annotate", filename)
             images.append({
                 'width': int(width),
                 'height': int(height),
                 'src': filename
             })
 
-    print(images)
     return render_template("data/annotate.html",
                                   images=images,
                                   labels=LABELS)
