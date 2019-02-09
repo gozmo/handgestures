@@ -1,45 +1,24 @@
-from flask import Flask
-app = Flask(__name__, template_folder="handsignals/server/templates")
 #!/bin/python
-from flask import Flask, Response, request, abort, render_template_string, send_from_directory,render_template
-from io import StringIO
+from flask import Flask, request, render_template
 
 from handsignals.dataset import file_utils
 from handsignals import main
 from handsignals.server.templates.data import data_template
 
-
-
-
+app = Flask(__name__, template_folder="handsignals/server/templates")
 
 @app.route('/<path:filename>')
 def image(filename):
-    try:
-        w = int(request.args['w'])
-        h = int(request.args['h'])
-    except (KeyError, ValueError):
-        return send_from_directory('.', filename)
+    return main.read_images(filename, request)
 
-    try:
-        im = Image.open(filename)
-        im.thumbnail((w, h), Image.ANTIALIAS)
-        io = StringIO.StringIO()
-        im.save(io, format='JPEG')
-        return Response(io.getvalue(), mimetype='image/jpeg')
-
-    except IOError:
-        abort(404)
-
-    return send_from_directory('.', filename)
-
-@app.route('/record', methods=["GET", "POST"])
-def record():
+@app.route('/capture', methods=["GET", "POST"])
+def capture():
     if request.method == "POST":
         post_dict= request.form.to_dict()
         frames_to_capture= post_dict["frames_to_capture"]
-        main.record(frames_to_capture)
+        main.capture(frames_to_capture)
 
-    return render_template("record/record.html")
+    return render_template("capture/capture.html")
 
 @app.route("/data")
 @app.route("/data/<task>", methods=["GET", "POST"])
