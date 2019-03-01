@@ -4,7 +4,7 @@ from flask import Flask, Response, request, abort, render_template_string, send_
 from io import StringIO
 
 from handsignals.dataset import file_utils
-WIDTH = 640 
+WIDTH = 640
 HEIGHT = 400
 
 LABELS = ["none", "metal", "ok", "victory"]
@@ -16,8 +16,10 @@ def render_annotate(request):
         file_utils.move_image_to_label(image_path, label)
 
     images = []
-    for root, dirs, files in os.walk('dataset/unlabeled'):
-        for filename in [os.path.join(root, name) for name in files]:
+    path = "dataset/unlabeled"
+
+    for root, dirs, files in os.walk(path):
+        for filename, name in [(os.path.join(root, name), name) for name in files]:
             if not filename.endswith('.jpg'):
                 continue
             im = Image.open(filename)
@@ -33,7 +35,7 @@ def render_annotate(request):
             images.append({
                 'width': int(width),
                 'height': int(height),
-                'src': filename
+                'src': name
             })
 
     return render_template("data/annotate.html",

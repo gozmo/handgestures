@@ -5,12 +5,19 @@ from handsignals.dataset import file_utils
 from handsignals import main
 from handsignals.server.templates.data import data_template
 
-app = Flask(__name__, template_folder="handsignals/server/templates")
+app = Flask(__name__, template_folder="handsignals/server/templates", static_url_path="")
 
+"""
 @app.route('/<path:filename>')
 def image(filename):
     print("route_image", filename)
     return main.read_images(filename, request)
+"""
+@app.route('/unlabeled/<string:filename>')
+def unlabeled(filename):
+    filepath = f"dataset/unlabeled/{filename}"
+    print("unlabel")
+    return main.read_images(filepath, request)
 
 @app.route('/capture', methods=["GET", "POST"])
 def capture():
@@ -24,7 +31,7 @@ def capture():
 @app.route("/data")
 @app.route("/data/<task>", methods=["GET", "POST"])
 def data(task=None):
-    print(task)
+    print(f"data task: {task}")
     if task is None:
         return render_template(f"data/base.html")
     elif task == "annotate":

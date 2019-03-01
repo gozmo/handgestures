@@ -1,9 +1,10 @@
 {% extends "data/base.html" %}
 
+
 {% block inner_content %}
     {% for image in images %}
-        <a class="image" href="{{image.src}}" style="width: {{ image.width }}px; height: {{ image.height }}px">
-            <img src={{image.src}} width="{{ image.width }}" height="{{ image.height }}" />
+        <a class="image" href="{{url_for('unlabeled', filename=image.src)}}" style="width: {{ image.width }}px; height: {{ image.height }}px">
+            <img src={{url_for('unlabeled', filename=image.src)}} width="{{ image.width }}" height="{{ image.height }}" />
         </a>
 
     <form action="" method="POST" onsubmit="" name={{image.src}}>
