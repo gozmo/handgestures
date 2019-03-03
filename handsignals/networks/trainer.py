@@ -1,4 +1,3 @@
-from handsignals.networks.torch_alexnet import AlexNet
 from handsignals.networks.simple_cnn import ConvNet
 from handsignals.dataset.image_dataset import ImageDataset
 from handsignals.constants import Labels
@@ -12,14 +11,16 @@ def train():
 
 
     #a = AlexNet(dataset.num_classes())
-    a = ConvNet(dataset.num_classes())
-    a.train(dataset)
+    conv_model = ConvNet(dataset.num_classes())
+    conv_model.train(dataset)
+    conv_model.save()
+
 
     for x in indices:
         d = dataset[x]
         image = d["image"]
         label = d["label"]
-        prediction = a.classify(image)
+        prediction = conv_model.classify(image)
         _, prediction_idx = torch.max(prediction,1)
         prediction_idx = prediction_idx.data[0]
         label_idx = np.argmax(label)

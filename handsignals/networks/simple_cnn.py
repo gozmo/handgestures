@@ -7,13 +7,17 @@ from torch import nn
 import torch
 import numpy as np
 
+if torch.cuda.is_available():
+    cuda = torch.device('cuda')
+
 class ConvNet:
     def __init__(self, num_classes):
+        self.num_classes = num_classes
         self.cnn_model = ConvNetModel(num_classes=num_classes)
         self.cnn_model.double()
 
 
-    def train(self, dataset, epochs=25):
+    def train(self, dataset, epochs=20):
         dataloader = DataLoader(dataset, batch_size=64, shuffle=True)
         optimizer = Adam(self.cnn_model.parameters(),
                 lr=0.001)
@@ -29,6 +33,13 @@ class ConvNet:
         image = np.asarray([image])
         image_torch = torch.from_numpy(image)
         return self.cnn_model(image_torch)
+
+    def save(self):
+        torch.save(self.cnn_model.state_dict(), "./torch.model")
+
+    def load(self):
+        model = ConvNetModel(self.num_classes)
+        model.load_state_dict(torch.load("./torch.model"))
 
 class ConvNetModel(nn.Module):
     def __init__(self, num_classes=10):
