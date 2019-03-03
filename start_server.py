@@ -7,12 +7,11 @@ from handsignals.server.templates.data import data_template
 
 app = Flask(__name__, template_folder="handsignals/server/templates", static_url_path="")
 
-"""
 @app.route('/<path:filename>')
 def image(filename):
     print("route_image", filename)
     return main.read_images(filename, request)
-"""
+
 @app.route('/unlabeled/<string:filename>')
 def unlabeled(filename):
     filepath = f"dataset/unlabeled/{filename}"
@@ -47,4 +46,12 @@ def index():
 def status():
     return "status: ok"
 
+@app.route('/models', methods=["GET", "POST"])
+def models():
+    if request.method == "POST":
+        #post_dict= request.form.to_dict()
+        #frames_to_capture= post_dict["frames_to_capture"]
+        main.train()
+
+    return render_template("models/base.html")
 app.run(debug=True, host='::')

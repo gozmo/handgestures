@@ -13,7 +13,7 @@ def render_annotate(request):
     if request.method == "POST":
         items = request.form.to_dict().items()
         (image_path, label) = list(items)[0]
-        file_utils.move_image_to_label(image_path, label)
+        file_utils.move_image_to_label("dataset/unlabeled/" + image_path, label)
 
     images = []
     path = "dataset/unlabeled"

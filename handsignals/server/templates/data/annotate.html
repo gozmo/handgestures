@@ -10,14 +10,9 @@
     <form action="" method="POST" onsubmit="" name={{image.src}}>
     {% for label in labels %}
             <p>
-        {% if label == "none" %}
-        <input type="radio" name={{image.src}} id={{label}} value={{label}} checked> {{label}} 
-        {% else %}
-        <input type="radio" name={{image.src}} id={{label}} value={{label}}>         {{label}}
-        {% endif %}
+            <input type=submit value={{label}} name={{image.src}}>
             </p>
     {% endfor %}
-        <p><input type=submit value=Next></p>
     </form>
     {% endfor %}
 {% endblock %}
