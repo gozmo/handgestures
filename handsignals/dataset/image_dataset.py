@@ -8,28 +8,39 @@ from handsignals.constants import Directories
 from handsignals.constants import Labels
 
 class ImageDataset:
-    def __init__(self):
+    def __init__(self, unlabel_data = False):
+        self.__unlabel_data = unlabel_data
         self.__available_labels = self.__read_labels()
-        self.__files, self.__labels = self.__get_image_file_paths_and_label()
+        if self.__unlabel_data:
+            self.__unlabeled_files = self.__get_unlabeled_image_file_paths()
+        else:
+            self.__labeled_files, self.__labels = self.__get_labeled_files()
 
-    def __get_image_file_paths_and_label(self):
-
+    def __get_labeled_files(self):
         files = []
         all_labels = []
         for string_label in self.__available_labels:
-            filepaths = self.__read_image_files(string_label)
-            file_labels = [string_label for x in range(len(filepaths))]
+            filepath = f"{Directories.LABEL}/{string_label}"
+            filepaths, filelabels = self.__get_image_file_paths_and_label(filepath, string_label)
             files.extend(filepaths)
-            all_labels.extend(file_labels)
-
+            all_labels.extend(filelabels)
         return files, all_labels
+
+    def __get_unlabeled_image_file_paths(self):
+        files = []
+        filepaths, _ = self.__get_image_file_paths_and_label(Directories.UNLABEL, None)
+        return filepaths
+
+    def __get_image_file_paths_and_label(self, directory, string_label):
+        filepaths = self.__read_image_files(directory)
+        file_labels = [string_label for x in range(len(filepaths))]
+        return filepaths, file_labels
 
     def __read_labels(self):
         labels = os.listdir(Directories.LABEL)
         return labels
 
-    def __read_image_files(self, label):
-        path = os.path.join(Directories.LABEL, label)
+    def __read_image_files(self, path):
         all_files = os.listdir(path)
 
         image_files = filter(lambda x: "jpg" in x, all_files)
@@ -39,15 +50,19 @@ class ImageDataset:
         return list(images_with_full_path)
 
     def __getitem__(self, idx):
-        filepath = self.__files[idx]
-        string_label = self.__labels[idx]
-        label_int = Labels.label_to_int(string_label)
-        label_vector = np.zeros(len(self.__available_labels))
-        label_vector[label_int] = 1
+        if self.__unlabel_data:
+            filepath = self.__unlabeled_files[idx]
+            label_vector = None
+        else:
+            filepath = self.__files[idx]
+            string_label = self.__labels[idx]
+            label_int = Labels.label_to_int(string_label)
+            label_vector = np.zeros(len(self.__available_labels))
+            label_vector[label_int] = 1
 
         image = self.__read_image(filepath)
 
-        return {"image": image, "label": label_vector}
+        return {"image": image, "label": label_vector, "filepath": filepath}
 
     def __read_image(self, filepath):
         image = cv2.imread(filepath)
@@ -57,7 +72,14 @@ class ImageDataset:
         return normalized_image
 
     def __len__(self):
-        return len(self.__files)
+        if self.__unlabel_data:
+            return len(self.__unlabeled_files)
+        else:
+            return len(self.__files)
 
     def num_classes(self):
         return len(self.__available_labels)
+
+    def all_labels(self):
+        return self.__available_labels
+    

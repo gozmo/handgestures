@@ -38,8 +38,8 @@ class ConvNet:
         torch.save(self.cnn_model.state_dict(), "./torch.model")
 
     def load(self):
-        model = ConvNetModel(self.num_classes)
-        model.load_state_dict(torch.load("./torch.model"))
+        self.cnn_model = ConvNetModel(self.num_classes)
+        self.cnn_model.load_state_dict(torch.load("./torch.model"))
 
 class ConvNetModel(nn.Module):
     def __init__(self, num_classes=10):

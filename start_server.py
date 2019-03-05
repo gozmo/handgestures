@@ -15,7 +15,6 @@ def image(filename):
 @app.route('/unlabeled/<string:filename>')
 def unlabeled(filename):
     filepath = f"dataset/unlabeled/{filename}"
-    print("unlabel")
     return main.read_images(filepath, request)
 
 @app.route('/capture', methods=["GET", "POST"])
@@ -35,6 +34,12 @@ def data(task=None):
         return render_template(f"data/base.html")
     elif task == "annotate":
         return data_template.render_annotate(request)
+    elif task == "aided_annotation":
+        if request.method == "POST":
+            post_dict= request.form.to_dict()
+            print(post_dict)
+        aided_annotations, all_labels = main.aided_annotation()
+        return render_template("data/aided_annotation.html", aided_annotations=aided_annotations, all_labels=all_labels)
     else:
         return render_template(f"data/{task}.html")
 
@@ -54,4 +59,5 @@ def models():
         main.train()
 
     return render_template("models/base.html")
+
 app.run(debug=True, host='::')
