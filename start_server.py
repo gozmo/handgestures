@@ -37,7 +37,7 @@ def data(task=None):
     elif task == "aided_annotation":
         if request.method == "POST":
             post_dict= request.form.to_dict()
-            print(post_dict)
+            main.annotate(post_dict)
         aided_annotations, all_labels = main.aided_annotation()
         return render_template("data/aided_annotation.html", aided_annotations=aided_annotations, all_labels=all_labels)
     else:

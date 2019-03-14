@@ -1,6 +1,9 @@
 from handsignals.networks.simple_cnn import ConvNet
 from handsignals.dataset.image_dataset import ImageDataset
 from handsignals.networks.simple_cnn import ConvNet
+from handsignals.constants import Labels
+
+import torch
 
 def classify(dataset):
 
@@ -10,8 +13,14 @@ def classify(dataset):
 
     predictions = []
     for idx in range(len(dataset)):
-        image = dataset[idx]["image"]
-        #prediction = conv_model.classify(image)
-        prediction = "mock_label"
+        d = dataset[idx]
+        image = d["image"]
+
+        prediction = conv_model.classify(image)
+
+        _, prediction_idx = torch.max(prediction,1)
+        prediction_idx = prediction_idx.data[0]
+        prediction = Labels.int_to_label(prediction_idx)
         predictions.append(prediction)
+
     return predictions

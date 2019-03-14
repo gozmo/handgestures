@@ -6,6 +6,7 @@ from handsignals.networks.classify import classify
 from handsignals.dataset.image_dataset import ImageDataset
 import os
 from collections import defaultdict
+from handsignals.dataset import file_utils
 
 WIDTH = 640
 HEIGHT = 400
@@ -34,6 +35,10 @@ def aided_annotation():
     all_labels = dataset.all_labels()
 
     return aided, all_labels
+
+def annotate(annotation_dict):
+    for filename, label in annotation_dict.items():
+        file_utils.move_file_to_label(filename, label)
 
 def active_learning():
     pass

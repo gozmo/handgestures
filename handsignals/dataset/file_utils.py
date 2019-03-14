@@ -22,6 +22,12 @@ def move_image_to_label(source_path, label):
     shutil.move(source_path, destination)
     print("Moved {} to {}".format(source_path, destination))
 
+def move_file_to_label(filename, label):
+    for dirpath, _, filenames in os.walk("dataset"):
+        if filename in filenames:
+            source_file =  os.path.join(dirpath, filename)
+    move_image_to_label(source_file, label)
+
 def get_images_paths():
     images = []
     for root, dirs, files in os.walk('dataset/unlabeled'):
