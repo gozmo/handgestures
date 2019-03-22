@@ -27,8 +27,9 @@ def train():
     trainer.train()
 
 def aided_annotation():
+    setup_model()
+
     dataset = ImageDataset(unlabel_data=True)
-    setup_model(dataset.number_of_classes())
     predictions = classify_dataset(dataset)
 
     aided = defaultdict(list)

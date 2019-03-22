@@ -38,7 +38,7 @@ class ImageDataset:
         return filepaths, file_labels
 
     def __read_labels(self):
-        file_labels.get_labels()
+        labels = file_utils.get_labels()
         return labels
 
     def __read_image_files(self, path):
@@ -66,7 +66,7 @@ class ImageDataset:
         return {"image": image, "label": label_vector, "filepath": filepath}
 
     def __read_image(self, filepath):
-        image = fileutils.read_image(filepath)
+        image = file_utils.read_image(filepath)
         return image
 
     def __len__(self):
@@ -75,7 +75,7 @@ class ImageDataset:
         else:
             return len(self.__files)
 
-    def num_classes(self):
+    def number_of_classes(self):
         return len(self.__available_labels)
 
     def all_labels(self):
