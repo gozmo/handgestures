@@ -7,12 +7,15 @@ from handsignals.constants import Directories
 class FrameHandling:
     def collect_data(self, frames = 100):
         captured_frames = start_capture(frames)
-        self._save_frames_to_unlabel(captured_frames)
+        files = self._save_frames_to_unlabel(captured_frames)
+        return files
 
     def _save_frames_to_unlabel(self, captured_frames):
-        print("saving frames: {}".format(captured_frames))
+        files = []
         for frame in captured_frames:
-            self._save_frame(frame, Directories.UNLABEL)
+            filename = self._save_frame(frame, Directories.UNLABEL)
+            files.append(filename)
+        return files
 
     def _save_frame(self, frame, directory):
         name = time.time()
@@ -20,3 +23,4 @@ class FrameHandling:
         print("writing file: {}".format(filepath))
 
         cv2.imwrite(filepath, frame)
+        return filepath

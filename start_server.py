@@ -60,4 +60,12 @@ def models():
 
     return render_template("models/base.html")
 
+@app.route('/live', methods=["GET", "POST"])
+def live():
+    if request.method == "POST":
+        main.start_live_view()
+    image_path, classification = main.live_view()
+
+    return render_template("live_view/live_view.html", filename=image_path, classification=classification)
+
 app.run(debug=True, host='::')

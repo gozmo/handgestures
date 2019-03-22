@@ -6,6 +6,7 @@ import numpy as np
 from torch.utils.data import Dataset
 from handsignals.constants import Directories
 from handsignals.constants import Labels
+from handsignals.dataset import file_utils
 
 class ImageDataset:
     def __init__(self, unlabel_data = False):
@@ -37,7 +38,7 @@ class ImageDataset:
         return filepaths, file_labels
 
     def __read_labels(self):
-        labels = os.listdir(Directories.LABEL)
+        file_labels.get_labels()
         return labels
 
     def __read_image_files(self, path):
@@ -65,11 +66,8 @@ class ImageDataset:
         return {"image": image, "label": label_vector, "filepath": filepath}
 
     def __read_image(self, filepath):
-        image = cv2.imread(filepath)
-        image_resized = cv2.resize(image, (320,240))
-        image_transposed = image_resized.transpose(2,1,0)
-        normalized_image = image_transposed/ 255
-        return normalized_image
+        image = fileutils.read_image(filepath)
+        return image
 
     def __len__(self):
         if self.__unlabel_data:
@@ -82,4 +80,11 @@ class ImageDataset:
 
     def all_labels(self):
         return self.__available_labels
-    
+
+class UnlabeledDataset(ImageDataset):
+    def __init__(self):
+        super(self, False)
+
+class LabeledDataset(ImageDataset):
+    def __init__(self):
+        super(self, True)

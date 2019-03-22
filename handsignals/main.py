@@ -2,16 +2,20 @@ from flask import Flask, Response, request, abort, render_template_string, send_
 from PIL import Image
 from io import StringIO
 from handsignals.networks import trainer
-from handsignals.networks.classify import classify
+from handsignals.networks.classify import classify_dataset
+from handsignals.networks.classify import classify_image
 from handsignals.dataset.image_dataset import ImageDataset
 import os
 from collections import defaultdict
 from handsignals.dataset import file_utils
+from handsignals.networks.classify import setup_model
+from handsignals.camera.frame_handling import FrameHandling
 
 WIDTH = 640
 HEIGHT = 400
 def capture(frames_to_capture):
-    pass
+    frame_handling = FrameHandling()
+    _ = frame_handling.collect_data(frames_to_capture)
 
 def read_images(filepath, request):
     filename = os.path.basename(filepath)
@@ -24,7 +28,8 @@ def train():
 
 def aided_annotation():
     dataset = ImageDataset(unlabel_data=True)
-    predictions = classify(dataset)
+    setup_model(dataset.number_of_classes())
+    predictions = classify_dataset(dataset)
 
     aided = defaultdict(list)
     for entry, prediction in zip(dataset, predictions):
@@ -42,3 +47,24 @@ def annotate(annotation_dict):
 
 def active_learning():
     pass
+
+live_view_active = False
+def start_live_view():
+    global live_view_active
+    live_view_active = True
+
+def live_view():
+    global live_view_active
+    if live_view_active:
+        setup_model()
+        frame_handling = FrameHandling()
+        files = frame_handling.collect_data(1)
+        image_path= files[0]
+        image = file_utils.read_image(image_path)
+        classification = classify_image(image)
+        image_filename= os.path.basename(image_path)
+
+    else:
+        image_filename= ""
+        classification = ""
+    return image_filename, classification

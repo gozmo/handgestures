@@ -1,6 +1,12 @@
+import copy
+import random
+import cv2
+import os
+import numpy as np
 import shutil
 from os import path
 import os
+from handsignals.constants import Directories
 
 LABEL_PATH = "dataset/labeled/{}"
 LABEL_IMAGE_PATH = "dataset/labeled/{}/{}"
@@ -49,3 +55,14 @@ def get_images_paths():
                 'src': filename
             })
     return images
+
+def read_image(filepath):
+    image = cv2.imread(filepath)
+    image_resized = cv2.resize(image, (320,240))
+    image_transposed = image_resized.transpose(2,1,0)
+    normalized_image = image_transposed/ 255
+    return normalized_image
+
+def get_labels():
+    labels = os.listdir(Directories.LABEL)
+    return labels
