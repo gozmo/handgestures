@@ -1,0 +1,15 @@
+{% extends "base.html" %}
+
+{% block content %}
+<meta http-equiv="refresh" content="0.5" />
+<b> {{classification}}
+<a class="image" href="{{url_for('unlabeled', filename=filename)}}" style="width: {{ filename.width }}px; height: {{ filename.height }}px">
+    <img src={{url_for('unlabeled', filename=filename)}} width="{{ filename.width }}" height="{{ filename.height }}" />
+</a>
+
+<form action="" method="POST" onsubmit="" name="live_view">
+    Start live view<br>
+    <input type=submit value"live_view">
+</form> 
+
+{% endblock %}
