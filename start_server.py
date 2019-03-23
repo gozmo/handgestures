@@ -37,7 +37,11 @@ def data(task=None):
     elif task == "aided_annotation":
         if request.method == "POST":
             post_dict= request.form.to_dict()
-            main.annotate(post_dict)
+            if "batch_size" in post_dict:
+                batch_size = int(post_dict["batch_size"])
+                main.set_aided_annotation_batch_size(batch_size)
+            else:
+                main.annotate(post_dict)
         aided_annotations, all_labels = main.aided_annotation()
         return render_template("data/aided_annotation.html", aided_annotations=aided_annotations, all_labels=all_labels)
     else:

@@ -10,10 +10,12 @@ from collections import defaultdict
 from handsignals.dataset import file_utils
 from handsignals.networks.classify import setup_model
 from handsignals.camera.frame_handling import FrameHandling
+import random
 
 WIDTH = 640
 HEIGHT = 400
 def capture(frames_to_capture):
+    frames_to_capture = int(frames_to_capture)
     frame_handling = FrameHandling()
     _ = frame_handling.collect_data(frames_to_capture)
 
@@ -26,24 +28,38 @@ def read_images(filepath, request):
 def train():
     trainer.train()
 
+aided_batch_size = 10
+
+def set_aided_annotation_batch_size(batch_size):
+    global aided_batch_size
+    aided_batch_size = batch_size
+
 def aided_annotation():
     setup_model()
 
     dataset = ImageDataset(unlabel_data=True)
-    predictions = classify_dataset(dataset)
+
+    global aided_batch_size
+    random_indices = [random.randint(0, len(dataset)) for _ in range(aided_batch_size)]
+
+    sub_dataset = dataset.subdataset(random_indices)
+    predictions = classify_dataset(sub_dataset)
 
     aided = defaultdict(list)
-    for entry, prediction in zip(dataset, predictions):
+    data_and_predictions = zip(sub_dataset, predictions)
+
+    for (entry, prediction) in data_and_predictions:
         filepath = entry["filepath"]
         filename = os.path.basename(filepath)
         aided[prediction].append(filename)
 
-    all_labels = dataset.all_labels()
+    all_labels = sub_dataset.all_labels()
 
     return aided, all_labels
 
 def annotate(annotation_dict):
     for filename, label in annotation_dict.items():
+        print(f"Moving {filename} to {label}")
         file_utils.move_file_to_label(filename, label)
 
 def active_learning():

@@ -9,13 +9,21 @@ from handsignals.constants import Labels
 from handsignals.dataset import file_utils
 
 class ImageDataset:
-    def __init__(self, unlabel_data = False):
+    def __init__(self, unlabel_data = False, files=None):
         self.__unlabel_data = unlabel_data
         self.__available_labels = self.__read_labels()
-        if self.__unlabel_data:
-            self.__unlabeled_files = self.__get_unlabeled_image_file_paths()
+
+        if files is None:
+            self.__read_files()
         else:
-            self.__labeled_files, self.__labels = self.__get_labeled_files()
+            self.__files = files
+
+    def __read_files(self):
+        if self.__unlabel_data:
+            self.__files = self.__get_unlabeled_image_file_paths()
+            self.__labels = None
+        else:
+            self.__files , self.__labels = self.__get_labeled_files()
 
     def __get_labeled_files(self):
         files = []
@@ -51,11 +59,11 @@ class ImageDataset:
         return list(images_with_full_path)
 
     def __getitem__(self, idx):
+        filepath = self.__files[idx]
+
         if self.__unlabel_data:
-            filepath = self.__unlabeled_files[idx]
             label_vector = None
         else:
-            filepath = self.__files[idx]
             string_label = self.__labels[idx]
             label_int = Labels.label_to_int(string_label)
             label_vector = np.zeros(len(self.__available_labels))
@@ -70,10 +78,7 @@ class ImageDataset:
         return image
 
     def __len__(self):
-        if self.__unlabel_data:
-            return len(self.__unlabeled_files)
-        else:
-            return len(self.__files)
+        return len(self.__files)
 
     def number_of_classes(self):
         return len(self.__available_labels)
@@ -81,10 +86,14 @@ class ImageDataset:
     def all_labels(self):
         return self.__available_labels
 
+    def subdataset(self, indices):
+        sub_files = [self.__files[i] for i in indices]
+        return ImageDataset(self.__unlabel_data, sub_files)
+
 class UnlabeledDataset(ImageDataset):
     def __init__(self):
-        super(self, False)
+        super(self, False, None)
 
 class LabeledDataset(ImageDataset):
     def __init__(self):
-        super(self, True)
+        super(self, True, None)
