@@ -19,15 +19,13 @@
                         </a>
                     </td>
                     <td>
-                        <form id="label_form">
-                            {% for label in all_labels %}
-                                {% if label == predicted_label %}
-                                    <input type=radio name={{filename}} value={{label}} checked>{{label}}</br>
-                                {% else %}
-                                    <input type=radio name={{filename}} value={{label}}>{{label}}</br>
-                                {% endif %}
-                            {% endfor %}
-                        </form>
+                        {% for label in all_labels %}
+                            {% if label == predicted_label %}
+                                <input type=radio name={{filename}} value={{label}} checked>{{label}}</br>
+                            {% else %}
+                                <input type=radio name={{filename}} value={{label}}>{{label}}</br>
+                            {% endif %}
+                        {% endfor %}
                     </td>
                 </tr>
             {% endfor %}
