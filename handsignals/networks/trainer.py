@@ -11,7 +11,7 @@ def train():
 
 
     #a = AlexNet(dataset.num_classes())
-    conv_model = ConvNet(dataset.num_classes())
+    conv_model = ConvNet(dataset.number_of_classes())
     conv_model.train(dataset)
     conv_model.save()
 
