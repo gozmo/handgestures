@@ -39,21 +39,27 @@ def aided_annotation():
 
     dataset = ImageDataset(unlabel_data=True)
 
-    global aided_batch_size
-    random_indices = [random.randint(0, len(dataset)) for _ in range(aided_batch_size)]
+    random_indices = [random.randint(0, len(dataset)) for _ in range(30)]
+    random_indices = list(set(random_indices))
+    dataset = dataset.subdataset(random_indices)
 
-    sub_dataset = dataset.subdataset(random_indices)
-    predictions = classify_dataset(sub_dataset)
+    predictions = classify_dataset(dataset)
+
+    value_extractor = lambda x: x[0]["score"]
+
+    predictions_and_data = zip(predictions, dataset)
+    predictions_and_data = sorted(predictions_and_data, key=value_extractor)
 
     aided = defaultdict(list)
-    data_and_predictions = zip(sub_dataset, predictions)
 
-    for (entry, prediction) in data_and_predictions:
+    global aided_batch_size
+    for (prediction, entry) in predictions_and_data[-aided_batch_size:]:
         filepath = entry["filepath"]
         filename = os.path.basename(filepath)
-        aided[prediction].append(filename)
+        label = prediction["label"]
+        aided[label].append(filename)
 
-    all_labels = sub_dataset.all_labels()
+    all_labels = dataset.all_labels()
 
     return aided, all_labels
 

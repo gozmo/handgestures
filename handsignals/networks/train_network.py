@@ -2,10 +2,10 @@ import time
 import copy
 import torch
 import numpy as np
+from handsignals import device
 
 def train_model(model, dataloader, criterion, optimizer, num_epochs=25, is_inception=False):
 
-    device = torch.device('cuda:0' if torch.cuda.is_available() else 'cpu')
     since = time.time()
 
     val_acc_history = []
@@ -31,11 +31,12 @@ def train_model(model, dataloader, criterion, optimizer, num_epochs=25, is_incep
 
                 images = batch["image"]
                 labels = batch["label"]
-                images.to(device)
-                labels.to(device)
 
                 image_input = torch.from_numpy(np.array(images))
                 labels_input = torch.from_numpy(np.array(labels))
+
+                image_input = image_input.to(device)
+                labels_input = labels_input.to(device)
 
                 # zero the parameter gradients
                 optimizer.zero_grad()
@@ -43,6 +44,7 @@ def train_model(model, dataloader, criterion, optimizer, num_epochs=25, is_incep
                 # forward
                 # track history if only in train
                 with torch.set_grad_enabled(phase == 'train'):
+
                     outputs = model(image_input)
                     loss = criterion(outputs, labels_input)
 
@@ -56,6 +58,8 @@ def train_model(model, dataloader, criterion, optimizer, num_epochs=25, is_incep
                 # statistics
                 running_loss += loss.item() * images.size(0)
                 _, correct = torch.max(labels.data, 1)
+                preds = preds.to(device)
+                correct = correct.to(device)
                 running_corrects += torch.sum(preds == correct)
 
             epoch_loss = running_loss / len(dataloader.dataset)

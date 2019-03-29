@@ -6,22 +6,21 @@ from handsignals.networks.train_network import train_model
 from torch import nn
 import torch
 import numpy as np
-
-if torch.cuda.is_available():
-    cuda = torch.device('cuda')
+from handsignals import device
 
 class ConvNet:
     def __init__(self, num_classes):
         self.num_classes = num_classes
         self.cnn_model = ConvNetModel(num_classes=num_classes)
         self.cnn_model.double()
+        self.cnn_model.to(device)
 
-
-    def train(self, dataset, epochs=20):
-        dataloader = DataLoader(dataset, batch_size=64, shuffle=True)
+    def train(self, dataset, epochs=50):
+        dataloader = DataLoader(dataset, batch_size=32, shuffle=True)
         optimizer = Adam(self.cnn_model.parameters(),
-                lr=0.001)
+                lr=0.0001)
         loss = BCEWithLogitsLoss()
+        self.cnn_model.to(device)
         trained_model = train_model(self.cnn_model,
                 dataloader,
                 loss,
@@ -32,6 +31,7 @@ class ConvNet:
     def classify(self, image):
         image = np.asarray([image])
         image_torch = torch.from_numpy(image)
+        image_torch = image_torch.to(device)
         return self.cnn_model(image_torch)
 
     def save(self):
@@ -39,7 +39,7 @@ class ConvNet:
 
     def load(self):
         self.cnn_model = ConvNetModel(self.num_classes)
-        self.cnn_model.load_state_dict(torch.load("./torch.model"))
+        self.cnn_model.load_state_dict(torch.load("./torch.model"), map_location=device)
 
 class ConvNetModel(nn.Module):
     def __init__(self, num_classes=10):
@@ -54,11 +54,29 @@ class ConvNetModel(nn.Module):
                 nn.BatchNorm2d(32),
                 nn.ReLU(),
                 nn.MaxPool2d(kernel_size=2, stride=2))
-        self.fc = nn.Linear(153600, num_classes)
+        self.layer3 = nn.Sequential(
+                nn.Conv2d(32, 32, kernel_size=5, stride=1, padding=2),
+                nn.BatchNorm2d(32),
+                nn.ReLU(),
+                nn.MaxPool2d(kernel_size=2, stride=2))
+        self.layer4 = nn.Sequential(
+                nn.Conv2d(32, 32, kernel_size=5, stride=1, padding=2),
+                nn.BatchNorm2d(32),
+                nn.ReLU(),
+                nn.MaxPool2d(kernel_size=2, stride=2))
+        self.fc1 = nn.Linear(9600, 1000)
+        self.fc2 = nn.Linear(1000, num_classes)
+        self.softmax = nn.Softmax()
+
+        self.to(device)
 
     def forward(self, x):
         out = self.layer1(x)
         out = self.layer2(out)
+        out = self.layer3(out)
+        out = self.layer4(out)
         out = out.reshape(out.size(0), -1)
-        out = self.fc(out)
+        out = self.fc1(out)
+        out = self.fc2(out)
+        out = self.softmax(out)
         return out

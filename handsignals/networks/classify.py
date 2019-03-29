@@ -8,6 +8,15 @@ import torch
 
 model = None
 
+def prediction_score(prediction_distribution):
+    score, prediction_idx = torch.max(prediction_distribution,1)
+    return score
+
+def predicted_label(prediction_distribution):
+    _, prediction_idx = torch.max(prediction_distribution,1)
+    prediction_idx = prediction_idx.data[0]
+    label = Labels.int_to_label(prediction_idx)
+    return label
 
 
 def setup_model():
@@ -22,12 +31,13 @@ def setup_model():
 
 def classify_image(image):
     global model
-    prediction = model.classify(image)
 
-    _, prediction_idx = torch.max(prediction,1)
-    prediction_idx = prediction_idx.data[0]
-    prediction = Labels.int_to_label(prediction_idx)
-    return prediction
+    prediction_distribution = model.classify(image)
+
+    label = predicted_label(prediction_distribution)
+    score = prediction_score(prediction_distribution)
+
+    return prediction_distribution, label, score
 
 def classify_dataset(dataset):
     global model
@@ -35,8 +45,16 @@ def classify_dataset(dataset):
     for idx in range(len(dataset)):
         d = dataset[idx]
         image = d["image"]
-        prediction = classify_image(image)
 
-        predictions.append(prediction)
+        prediction_distribution, label, score = classify_image(image)
+
+        entry = {"distribution": prediction_distribution,
+                 "score": score,
+                 "label": label}
+
+        predictions.append(entry)
 
     return predictions
+
+
+
