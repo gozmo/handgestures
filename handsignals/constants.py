@@ -3,7 +3,6 @@ import tensorflow as tf
 class Directories:
     UNLABEL = "dataset/unlabeled"
     LABEL = "dataset/labeled"
-    TF_RECORDS = "dataset/tfrecords"
 
 class Labels:
     victory = "victory"
@@ -25,14 +24,3 @@ class Labels:
     def int_to_label(index):
         __labels = Labels.get_labels()
         return __labels[index] 
-
-
-class TFRecord:
-    IMAGE_FEATURE_DESCRIPTION = \
-            { "label": tf.FixedLenFeature([], tf.int64),
-              "text_label": tf.FixedLenFeature([], tf.string),
-              "width": tf.FixedLenFeature([], tf.int64),
-              "height": tf.FixedLenFeature([], tf.int64),
-              "image": tf.FixedLenFeature([], tf.string)}
-
-

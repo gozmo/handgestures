@@ -44,6 +44,7 @@ def aided_annotation():
     dataset = dataset.subdataset(random_indices)
 
     predictions = classify_dataset(dataset)
+    print(predictions)
 
     value_extractor = lambda x: x[0]["score"]
 
@@ -56,10 +57,12 @@ def aided_annotation():
     for (prediction, entry) in predictions_and_data[-aided_batch_size:]:
         filepath = entry["filepath"]
         filename = os.path.basename(filepath)
-        label = prediction["label"]
-        aided[label].append(filename)
+        label = entry["label"]
+        html_tuple=  (filename, prediction["distribution"])
+        aided[label].append(html_tuple)
 
     all_labels = dataset.all_labels()
+    print(aided)
 
     return aided, all_labels
 

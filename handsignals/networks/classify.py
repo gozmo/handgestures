@@ -37,7 +37,8 @@ def classify_image(image):
     label = predicted_label(prediction_distribution)
     score = prediction_score(prediction_distribution)
 
-    return prediction_distribution, label, score
+    distribution = prediction_distribution.tolist()[0]
+    return distribution, label, score
 
 def classify_dataset(dataset):
     global model
@@ -48,7 +49,8 @@ def classify_dataset(dataset):
 
         prediction_distribution, label, score = classify_image(image)
 
-        entry = {"distribution": prediction_distribution,
+        distribution = dict(zip(dataset.all_labels(), prediction_distribution))
+        entry = {"distribution": distribution,
                  "score": score,
                  "label": label}
 
