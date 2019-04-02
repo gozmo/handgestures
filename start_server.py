@@ -58,9 +58,12 @@ def status():
 @app.route('/models', methods=["GET", "POST"])
 def models():
     if request.method == "POST":
-        #post_dict= request.form.to_dict()
+        post_dict= request.form.to_dict()
         #frames_to_capture= post_dict["frames_to_capture"]
-        main.train()
+        if post_dict["action"] == "train":
+            main.train()
+        else:
+            main.resume_training()
 
     return render_template("models/base.html")
 

@@ -15,7 +15,7 @@ class ConvNet:
         self.cnn_model.double()
         self.cnn_model.to(device)
 
-    def train(self, dataset, epochs=50):
+    def train(self, dataset, epochs=150):
         dataloader = DataLoader(dataset, batch_size=32, shuffle=True)
         optimizer = Adam(self.cnn_model.parameters(),
                 lr=0.0001)
@@ -39,7 +39,9 @@ class ConvNet:
 
     def load(self):
         self.cnn_model = ConvNetModel(self.num_classes)
-        self.cnn_model.load_state_dict(torch.load("./torch.model"), map_location=device)
+        self.cnn_model.load_state_dict(torch.load("./torch.model"))
+        self.cnn_model.double()
+        self.cnn_model.to(device)
 
 class ConvNetModel(nn.Module):
     def __init__(self, num_classes=10):

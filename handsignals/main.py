@@ -28,6 +28,9 @@ def read_images(filepath, request):
 def train():
     trainer.train()
 
+def resume_training():
+    trainer.train(resume=True)
+
 aided_batch_size = 10
 
 def set_aided_annotation_batch_size(batch_size):
@@ -44,10 +47,10 @@ def aided_annotation():
     dataset = dataset.subdataset(random_indices)
 
     predictions = classify_dataset(dataset)
-    print(predictions)
 
     value_extractor = lambda x: x[0]["score"]
 
+    #the problem is here, label is set present and then set to None
     predictions_and_data = zip(predictions, dataset)
     predictions_and_data = sorted(predictions_and_data, key=value_extractor)
 
@@ -62,7 +65,6 @@ def aided_annotation():
         aided[label].append(html_tuple)
 
     all_labels = dataset.all_labels()
-    print(aided)
 
     return aided, all_labels
 
