@@ -10,6 +10,8 @@ from collections import defaultdict
 from handsignals.dataset import file_utils
 from handsignals.networks.classify import setup_model
 from handsignals.camera.frame_handling import FrameHandling
+from handsignals.annotation import aided_annotation as aa
+from handsignals.constants import Labels
 import random
 
 WIDTH = 640
@@ -38,35 +40,9 @@ def set_aided_annotation_batch_size(batch_size):
     aided_batch_size = batch_size
 
 def aided_annotation():
-    setup_model()
-
-    dataset = ImageDataset(unlabel_data=True)
-
-    random_indices = [random.randint(0, len(dataset)) for _ in range(30)]
-    random_indices = list(set(random_indices))
-    dataset = dataset.subdataset(random_indices)
-
-    predictions = classify_dataset(dataset)
-
-    value_extractor = lambda x: x[0]["score"]
-
-    #the problem is here, label is set present and then set to None
-    predictions_and_data = zip(predictions, dataset)
-    predictions_and_data = sorted(predictions_and_data, key=value_extractor)
-
-    aided = defaultdict(list)
-
-    global aided_batch_size
-    for (prediction, entry) in predictions_and_data[-aided_batch_size:]:
-        filepath = entry["filepath"]
-        filename = os.path.basename(filepath)
-        label = prediction["label"]
-        html_tuple=  (filename, prediction["distribution"])
-        aided[label].append(html_tuple)
-
-    all_labels = dataset.all_labels()
-
-    return aided, all_labels
+    annotation_help = aa.annotate(aided_batch_size)
+    all_labels = Labels.get_labels()
+    return annotation_help, all_labels
 
 def annotate(annotation_dict):
     for filename, label in annotation_dict.items():
