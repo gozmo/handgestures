@@ -10,7 +10,7 @@ model = None
 
 def prediction_score(prediction_distribution):
     score, prediction_idx = torch.max(prediction_distribution,1)
-    return score
+    return score.item()
 
 def predicted_label(prediction_distribution):
     _, prediction_idx = torch.max(prediction_distribution,1)
@@ -49,7 +49,7 @@ def classify_dataset(dataset):
 
         prediction_distribution, label, score = classify_image(image)
 
-        distribution = dict(zip(dataset.all_labels(), prediction_distribution))
+        distribution = dict(zip(Labels.get_labels(), prediction_distribution))
         entry = {"distribution": distribution,
                  "score": score,
                  "label": label}

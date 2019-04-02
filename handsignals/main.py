@@ -60,7 +60,7 @@ def aided_annotation():
     for (prediction, entry) in predictions_and_data[-aided_batch_size:]:
         filepath = entry["filepath"]
         filename = os.path.basename(filepath)
-        label = entry["label"]
+        label = prediction["label"]
         html_tuple=  (filename, prediction["distribution"])
         aided[label].append(html_tuple)
 

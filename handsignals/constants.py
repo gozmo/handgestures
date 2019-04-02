@@ -23,4 +23,5 @@ class Labels:
     @staticmethod
     def int_to_label(index):
         __labels = Labels.get_labels()
-        return __labels[index] 
+        label = __labels[index] 
+        return label
