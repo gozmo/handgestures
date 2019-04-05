@@ -10,13 +10,15 @@ def annotate(aided_batch_size):
 
     dataset = ImageDataset(unlabel_data=True)
 
-    random_indices = [random.randint(0, len(dataset)) for _ in range(30)]
+    """
+    random_indices = [random.randint(0, len(dataset)) for _ in range(200)]
     random_indices = list(set(random_indices))
     dataset = dataset.subdataset(random_indices)
+    """
 
     predictions = classify_dataset(dataset)
 
-    value_extractor = lambda x: x[0]["score"]
+    value_extractor = lambda x: x[0].score
 
     #the problem is here, label is set present and then set to None
     predictions_and_data = zip(predictions, dataset)
@@ -27,8 +29,8 @@ def annotate(aided_batch_size):
     for (prediction, entry) in predictions_and_data[-aided_batch_size:]:
         filepath = entry["filepath"]
         filename = os.path.basename(filepath)
-        label = prediction["label"]
-        html_tuple=  (filename, prediction["distribution"])
+        label = prediction.label
+        html_tuple=  (filename, prediction.prediction_distribution)
         aided[label].append(html_tuple)
 
     return aided 

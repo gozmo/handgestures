@@ -12,6 +12,7 @@ from handsignals.networks.classify import setup_model
 from handsignals.camera.frame_handling import FrameHandling
 from handsignals.annotation import aided_annotation as aa
 from handsignals.constants import Labels
+from handsignals.annotation import active_learning as al
 import random
 
 WIDTH = 640
@@ -49,8 +50,16 @@ def annotate(annotation_dict):
         print(f"Moving {filename} to {label}")
         file_utils.move_file_to_label(filename, label)
 
+active_learning_batch_size = 30 
+def set_aided_annotation_batch_size(batch_size):
+    global active_learning_batch_size 
+    aided_batch_size = batch_size
+
 def active_learning():
-    pass
+    global active_learning_batch_size 
+    annotation_help = al.generate_query(active_learning_batch_size)
+    all_labels = Labels.get_labels()
+    return annotation_help, all_labels
 
 live_view_active = False
 def start_live_view():
