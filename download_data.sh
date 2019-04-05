@@ -1,1 +1,1 @@
-scp -r goz@yama:/volume2/pontus/projects/handsigns_data/dataset .
+scp -r goz@yama:/volume2/pontus/projects/handsigns_data/dataset/unlabeled/* dataset/unlabeled
