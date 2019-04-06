@@ -5,6 +5,7 @@ from handsignals.constants import Labels
 from handsignals.dataset import file_utils
 from torch.utils.data import DataLoader
 from handsignals.core.result import PredictionResult
+from handsignals import device
 
 import torch
 
@@ -42,13 +43,14 @@ def classify_dataset(dataset):
     global model
     predictions = []
 
-    batch_size = 16
+    batch_size = 32
 
-    dataloader = DataLoader(dataset, batch_size=batch_size)
+    dataloader = DataLoader(dataset, batch_size=batch_size, pin_memory=True)
 
 
     for batch in dataloader:
-        print("batch")
+        a = torch.cuda.memory_allocated(device=device)
+        print("batch", a)
         images = batch["image"]
 
         prediction_distributions =  model.classify_batch(images)
@@ -59,6 +61,9 @@ def classify_dataset(dataset):
             prediction_result = PredictionResult(prediction_distribution)
 
             predictions.append(prediction_result)
+
+        del batch
+        del prediction_distributions
 
     return predictions
 

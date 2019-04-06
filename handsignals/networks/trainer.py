@@ -12,3 +12,4 @@ def train(resume=False):
         conv_model.load()
     conv_model.train(dataset)
     conv_model.save()
+    del conv_model

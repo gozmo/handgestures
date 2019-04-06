@@ -10,17 +10,10 @@ def generate_query(batch_size):
 
     dataset = ImageDataset(unlabel_data=True)
 
-    """
-    random_indices = [random.randint(0, len(dataset)) for _ in range(200)]
-    random_indices = list(set(random_indices))
-    dataset = dataset.subdataset(random_indices)
-    """
-
     predictions = classify_dataset(dataset)
 
     value_extractor = lambda x: x[0].active_learning_score
 
-    #the problem is here, label is set present and then set to None
     predictions_and_data = zip(predictions, dataset)
     predictions_and_data = sorted(predictions_and_data, key=value_extractor)
 
@@ -33,5 +26,4 @@ def generate_query(batch_size):
         html_tuple=  (filename, prediction.prediction_distribution)
         aided.append(html_tuple)
 
-    print(aided)
     return aided 

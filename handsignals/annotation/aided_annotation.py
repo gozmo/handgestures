@@ -10,12 +10,6 @@ def annotate(aided_batch_size):
 
     dataset = ImageDataset(unlabel_data=True)
 
-    """
-    random_indices = [random.randint(0, len(dataset)) for _ in range(200)]
-    random_indices = list(set(random_indices))
-    dataset = dataset.subdataset(random_indices)
-    """
-
     predictions = classify_dataset(dataset)
 
     value_extractor = lambda x: x[0].score
