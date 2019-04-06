@@ -1,19 +1,21 @@
-from flask import Flask, Response, request, abort, render_template_string, send_from_directory,render_template
 from PIL import Image
+from collections import defaultdict
+from flask import Flask, Response, request, abort, render_template_string, send_from_directory,render_template
 from io import StringIO
+from threading import Thread
+import os
+import random
+
+from handsignals.annotation import active_learning as al
+from handsignals.annotation import aided_annotation as aa
+from handsignals.camera.frame_handling import FrameHandling
+from handsignals.constants import Labels
+from handsignals.dataset import file_utils
+from handsignals.dataset.image_dataset import ImageDataset
 from handsignals.networks import trainer
 from handsignals.networks.classify import classify_dataset
 from handsignals.networks.classify import classify_image
-from handsignals.dataset.image_dataset import ImageDataset
-import os
-from collections import defaultdict
-from handsignals.dataset import file_utils
 from handsignals.networks.classify import setup_model
-from handsignals.camera.frame_handling import FrameHandling
-from handsignals.annotation import aided_annotation as aa
-from handsignals.constants import Labels
-from handsignals.annotation import active_learning as al
-import random
 
 WIDTH = 640
 HEIGHT = 400
@@ -28,13 +30,13 @@ def read_images(filepath, request):
 
     return send_from_directory(folder_path, filename)
 
-def train(learning_rate, epochs, batch_size, resume):
-    trainer.train(learning_rate=learning_rate, 
-                  epochs=epochs,
-                  batch_size=batch_size, 
-                  resume=resume)
+def train(*args, **kwargs):
+    train = trainer.train
+    threading = Thread(target=train, kwargs=kwargs)
+    threading.start()
 
-aided_batch_size = 10
+
+aided_batch_size = 50
 
 def set_aided_annotation_batch_size(batch_size):
     global aided_batch_size
