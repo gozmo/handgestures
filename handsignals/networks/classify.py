@@ -3,20 +3,20 @@ from handsignals.dataset.image_dataset import ImageDataset
 from handsignals.networks.simple_cnn import ConvNet
 from handsignals.constants import Labels
 from handsignals.dataset import file_utils
+from torch.utils.data import DataLoader
+from handsignals.core.result import PredictionResult
 
 import torch
 
 model = None
 
-def prediction_score(prediction_distribution):
-    score, prediction_idx = torch.max(prediction_distribution,1)
-    return score.item()
 
-def predicted_label(prediction_distribution):
-    _, prediction_idx = torch.max(prediction_distribution,1)
-    prediction_idx = prediction_idx.data[0]
-    label = Labels.int_to_label(prediction_idx)
-    return label
+def classification_results(prediction_distribution):
+    label = predicted_label(prediction_distribution)
+    score = prediction_score(prediction_distribution)
+
+    distribution = prediction_distribution.tolist()
+    return distribution, label, score
 
 
 def setup_model():
@@ -33,28 +33,32 @@ def classify_image(image):
     global model
 
     prediction_distribution = model.classify(image)
+    prediction_result = PredictionResult(prediction_distribution)
 
-    label = predicted_label(prediction_distribution)
-    score = prediction_score(prediction_distribution)
+    return prediction_result
 
-    distribution = prediction_distribution.tolist()[0]
-    return distribution, label, score
 
 def classify_dataset(dataset):
     global model
     predictions = []
-    for idx in range(len(dataset)):
-        d = dataset[idx]
-        image = d["image"]
 
-        prediction_distribution, label, score = classify_image(image)
+    batch_size = 16
 
-        distribution = dict(zip(Labels.get_labels(), prediction_distribution))
-        entry = {"distribution": distribution,
-                 "score": score,
-                 "label": label}
+    dataloader = DataLoader(dataset, batch_size=batch_size)
 
-        predictions.append(entry)
+
+    for batch in dataloader:
+        print("batch")
+        images = batch["image"]
+
+        prediction_distributions =  model.classify_batch(images)
+
+        for index in range(len(prediction_distributions)):
+            prediction_distribution = prediction_distributions[index]
+
+            prediction_result = PredictionResult(prediction_distribution)
+
+            predictions.append(prediction_result)
 
     return predictions
 

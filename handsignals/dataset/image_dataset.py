@@ -8,7 +8,7 @@ from handsignals.constants import Directories
 from handsignals.constants import Labels
 from handsignals.dataset import file_utils
 
-class ImageDataset:
+class ImageDataset(Dataset):
     def __init__(self, unlabel_data = False, files=None):
         self.__unlabel_data = unlabel_data
         self.__available_labels = self.__read_labels()
@@ -62,7 +62,7 @@ class ImageDataset:
         filepath = self.__files[idx]
 
         if self.__unlabel_data:
-            label_vector = None
+            label_vector = [0]
         else:
             string_label = self.__labels[idx]
             label_int = Labels.label_to_int(string_label)

@@ -15,7 +15,7 @@ class ConvNet:
         self.cnn_model.double()
         self.cnn_model.to(device)
 
-    def train(self, dataset, epochs=150):
+    def train(self, dataset, epochs=25):
         dataloader = DataLoader(dataset, batch_size=32, shuffle=True)
         optimizer = Adam(self.cnn_model.parameters(),
                 lr=0.0001)
@@ -33,6 +33,13 @@ class ConvNet:
         image_torch = torch.from_numpy(image)
         image_torch = image_torch.to(device)
         return self.cnn_model(image_torch)
+
+    def classify_batch(self, batch):
+        images = np.asarray(batch)
+        images_torch = torch.from_numpy(images)
+        images_torch = images_torch.to(device)
+        return self.cnn_model(images_torch)
+
 
     def save(self):
         torch.save(self.cnn_model.state_dict(), "./torch.model")

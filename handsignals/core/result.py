@@ -5,7 +5,7 @@ from handsignals.constants import Labels
 class PredictionResult:
     def __init__(self, prediction_result):
         self.__prediction_result = prediction_result
-        self.distribution = self.__prediction_result.tolist()[0]
+        self.distribution = self.__prediction_result.tolist()
 
         self.prediction_distribution = dict(zip(Labels.get_labels(), self.distribution))
 
@@ -15,12 +15,12 @@ class PredictionResult:
         self.active_learning_score = self.__get_active_learning_score()
 
     def __get_score(self):
-        score, prediction_idx = torch.max(self.__prediction_result, 1)
+        score, prediction_idx = torch.max(self.__prediction_result, 0)
         return score.item()
 
     def __get_label(self):
-        _, prediction_idx = torch.max(self.__prediction_result,1)
-        prediction_idx = prediction_idx.data[0]
+        _, prediction_idx = torch.max(self.__prediction_result,0)
+        prediction_idx = prediction_idx.item()
         label = Labels.int_to_label(prediction_idx)
         return label
 
