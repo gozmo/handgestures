@@ -4,7 +4,7 @@ import torch
 import numpy as np
 from handsignals import device
 
-def train_model(model, dataloader, criterion, optimizer, num_epochs=25, is_inception=False):
+def train_model(model, dataloader, criterion, optimizer, num_epochs, is_inception=False):
 
     since = time.time()
 

@@ -71,11 +71,19 @@ def status():
 def models():
     if request.method == "POST":
         post_dict= request.form.to_dict()
-        #frames_to_capture= post_dict["frames_to_capture"]
+        learning_rate = float(post_dict["learning_rate"])
+        batch_size = int(post_dict["batch_size"])
+        epochs = int(post_dict["epochs"])
+
+
         if post_dict["action"] == "train":
-            main.train()
+            resume=False
         else:
-            main.resume_training()
+            resume=True
+        main.train(learning_rate=learning_rate,
+                    batch_size=batch_size,
+                    epochs=epochs,
+                    resume=resume)
 
     return render_template("models/base.html")
 

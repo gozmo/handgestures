@@ -24,5 +24,5 @@ class PredictionResult:
 
     def __get_active_learning_score(self):
         nlogn = [n * math.log(n) for n in self.distribution]
-        score = sum(nlogn)
+        score = -sum(nlogn)
         return score

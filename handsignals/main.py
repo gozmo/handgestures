@@ -28,11 +28,11 @@ def read_images(filepath, request):
 
     return send_from_directory(folder_path, filename)
 
-def train():
-    trainer.train()
-
-def resume_training():
-    trainer.train(resume=True)
+def train(learning_rate, epochs, batch_size, resume):
+    trainer.train(learning_rate=learning_rate, 
+                  epochs=epochs,
+                  batch_size=batch_size, 
+                  resume=resume)
 
 aided_batch_size = 10
 

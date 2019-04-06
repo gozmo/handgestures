@@ -50,7 +50,6 @@ def classify_dataset(dataset):
 
     for batch in dataloader:
         a = torch.cuda.memory_allocated(device=device)
-        print("batch", a)
         images = batch["image"]
 
         prediction_distributions =  model.classify_batch(images)

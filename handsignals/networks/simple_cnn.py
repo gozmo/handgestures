@@ -15,10 +15,14 @@ class ConvNet:
         self.cnn_model.double()
         self.cnn_model.to(device)
 
-    def train(self, dataset, epochs=25):
-        dataloader = DataLoader(dataset, batch_size=32, shuffle=True)
+    def train(self, 
+              dataset, 
+              epochs,
+              batch_size,
+              learning_rate):
+        dataloader = DataLoader(dataset, batch_size=batch_size, shuffle=True)
         optimizer = Adam(self.cnn_model.parameters(),
-                lr=0.0001)
+                lr=learning_rate)
         loss = BCEWithLogitsLoss()
         self.cnn_model.to(device)
         trained_model = train_model(self.cnn_model,
