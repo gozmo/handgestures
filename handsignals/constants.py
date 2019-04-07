@@ -25,3 +25,6 @@ class Labels:
         __labels = Labels.get_labels()
         label = __labels[index] 
         return label
+
+class Event:
+    TRAINING_DONE = "training_done"

@@ -1,8 +1,10 @@
 from handsignals.networks.simple_cnn import ConvNet
 from handsignals.dataset.image_dataset import ImageDataset
 from handsignals.constants import Labels
+from handsignals.constants import Event
 import numpy as np
 import torch
+from handsignals.core.events import register_event
 
 def train( learning_rate, epochs, batch_size,resume):
     dataset = ImageDataset()
@@ -17,3 +19,4 @@ def train( learning_rate, epochs, batch_size,resume):
                      batch_size=batch_size)
     conv_model.save()
     del conv_model
+    register_event(Event.TRAINING_DONE)

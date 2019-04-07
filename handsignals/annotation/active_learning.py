@@ -4,26 +4,21 @@ import random
 import os
 from collections import defaultdict
 from handsignals.networks.classify import classify_dataset
+from handsignals.annotation.annotation_generator import generate
+from handsignals.annotation.annotation_generator import AnnotationHolder
+
+annotation_holder = AnnotationHolder(20)
 
 def generate_query(batch_size):
-    setup_model()
+    global annotation_holder
 
-    dataset = ImageDataset(unlabel_data=True)
+    if len(annotation_holder) == 0:
+        value_extractor = lambda x: x[0].active_learning_score
 
-    predictions = classify_dataset(dataset)
+        query = generate(value_extractor)
+        annotation_holder.set_annotations(query)
 
-    value_extractor = lambda x: x[0].active_learning_score
+    batch = annotation_holder.get_batch()
 
-    predictions_and_data = zip(predictions, dataset)
-    predictions_and_data = sorted(predictions_and_data, key=value_extractor)
+    return batch
 
-    aided = list()
-
-    for (prediction, entry) in predictions_and_data[-batch_size:]:
-        filepath = entry["filepath"]
-        filename = os.path.basename(filepath)
-        label = prediction.label
-        html_tuple=  (filename, prediction.prediction_distribution)
-        aided.append(html_tuple)
-
-    return aided 

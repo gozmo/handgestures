@@ -32,8 +32,8 @@ def read_images(filepath, request):
 
 def train(*args, **kwargs):
     train = trainer.train
-    threading = Thread(target=train, kwargs=kwargs)
-    threading.start()
+    training_thread = Thread(target=train, kwargs=kwargs)
+    training_thread.start()
 
 
 aided_batch_size = 50
