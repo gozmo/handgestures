@@ -66,3 +66,20 @@ def read_image(filepath):
 def get_labels():
     labels = os.listdir(Directories.LABEL)
     return labels
+
+def make_training_run_dir(training_run_id):
+    path = f"training_runs/{training_run_id}"
+    os.makedirs(path)
+    return path
+
+def get_training_run_id():
+    folders = os.listdir("training_runs")
+    digit_folders = filter(str.isdigit, folders)
+    if len(digit_folders) == 0:
+        next_training_run_id = 0
+    else:
+        digits = map(int, digit_folders))
+        max_digit = max(digits)
+        next_training_run_id = max_digit + 1
+    return str(next_training_run_id)
+

@@ -11,7 +11,6 @@ from handsignals.annotation import aided_annotation as aa
 from handsignals.camera.frame_handling import FrameHandling
 from handsignals.constants import Labels
 from handsignals.dataset import file_utils
-from handsignals.dataset.image_dataset import ImageDataset
 from handsignals.networks import trainer
 from handsignals.networks.classify import classify_dataset
 from handsignals.networks.classify import classify_image

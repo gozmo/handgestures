@@ -8,21 +8,22 @@ from handsignals.constants import Directories
 from handsignals.constants import Labels
 from handsignals.dataset import file_utils
 
+
 class ImageDataset(Dataset):
-    def __init__(self, unlabel_data = False, files=None):
-        self.__unlabel_data = unlabel_data
+    def __init__(self, folder):
+        self.__folder = folder
         self.__available_labels = self.__read_labels()
 
-        if files is None:
-            self.__read_files()
-        else:
-            self.__files = files
+        self.__read_files()
 
     def __read_files(self):
-        if self.__unlabel_data:
+        if self.__folder == Directories.UNLABEL:
             self.__files = self.__get_unlabeled_image_file_paths()
             self.__labels = None
-        else:
+            self.__unlabel_data = True
+        elif self.__folder == Directories.LABEL:
+            self.__files , self.__labels = self.__get_labeled_files()
+        elif self.__folder == Directories.HOLDOUT:
             self.__files , self.__labels = self.__get_labeled_files()
 
     def __get_labeled_files(self):
@@ -71,7 +72,9 @@ class ImageDataset(Dataset):
 
         image = self.__read_image(filepath)
 
-        return {"image": image, "label": label_vector, "filepath": filepath}
+        return {"image": image,
+                "label": label_vector,
+                "filepath": filepath}
 
     def __read_image(self, filepath):
         image = file_utils.read_image(filepath)
@@ -92,8 +95,12 @@ class ImageDataset(Dataset):
 
 class UnlabeledDataset(ImageDataset):
     def __init__(self):
-        super(self, False, None)
+        super().__init__(Directories.UNLABEL)
 
 class LabeledDataset(ImageDataset):
     def __init__(self):
-        super(self, True, None)
+        super().__init__(Directories.LABEL)
+
+class HoldoutDataset(ImageDataset):
+    def __init__(self):
+        super().__init__(Directories.HOLDOUT)

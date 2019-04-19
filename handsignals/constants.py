@@ -3,13 +3,14 @@ import tensorflow as tf
 class Directories:
     UNLABEL = "dataset/unlabeled"
     LABEL = "dataset/labeled"
+    HOLDOUT = "dataset/holdout"
 
 class Labels:
     victory = "victory"
     metal = "metal"
     ok = "ok"
     none = "none"
-    
+
     @staticmethod
     def get_labels():
         return [Labels.none, Labels.ok, Labels.metal, Labels.victory]
@@ -18,12 +19,12 @@ class Labels:
     def label_to_int(label):
         __labels = Labels.get_labels()
         int_label = __labels.index(label)
-        return int_label 
+        return int_label
 
     @staticmethod
     def int_to_label(index):
         __labels = Labels.get_labels()
-        label = __labels[index] 
+        label = __labels[index]
         return label
 
 class Event:

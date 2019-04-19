@@ -1,5 +1,4 @@
 from handsignals.networks.classify import setup_model
-from handsignals.dataset.image_dataset import ImageDataset
 import random
 import os
 from collections import defaultdict

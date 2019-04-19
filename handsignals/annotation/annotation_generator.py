@@ -1,5 +1,5 @@
 from handsignals.networks.classify import setup_model
-from handsignals.dataset.image_dataset import ImageDataset
+from handsignals.dataset.image_dataset import UnlabeledDataset 
 import random
 import os
 from collections import defaultdict
@@ -10,7 +10,7 @@ from handsignals.core import events
 def generate(score_key):
     setup_model()
 
-    dataset = ImageDataset(unlabel_data=True)
+    dataset = UnlabeledDataset()
 
     predictions = classify_dataset(dataset)
 
