@@ -30,7 +30,7 @@ class ConvNet:
                 loss,
                 optimizer,
                 epochs)
-        self.cnn_model, _ = trained_model
+        self.cnn_model = trained_model
         return loss_per_epoch
 
     def classify(self, image):

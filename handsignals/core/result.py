@@ -27,3 +27,12 @@ class PredictionResult:
         nlogn = [n * math.log(n) for n in self.distribution]
         score = -sum(nlogn)
         return score
+
+    def to_json(self):
+        return {"score": self.score,
+                "distribution": self.distribution,
+                "prediction_distribution": self.prediction_distribution,
+                "label": self.label,
+                "active_learning_score": self.active_learning_score,
+                "true_label": self.true_label}
+

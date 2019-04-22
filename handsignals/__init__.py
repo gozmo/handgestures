@@ -6,7 +6,6 @@ try:
 except:
     device = torch.device('cpu')
 
-device = torch.device('cpu')
 print('Using device:', device)
 print()
 

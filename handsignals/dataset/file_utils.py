@@ -2,6 +2,7 @@ import copy
 import random
 import cv2
 import os
+import json
 import numpy as np
 import shutil
 from os import path
@@ -73,7 +74,7 @@ def make_training_run_dir(training_run_id):
     return path
 
 def get_training_run_id():
-    folders = os.listdir("training_runs")
+    folders = os.listdir("evaluations")
     digit_folders = list(filter(str.isdigit, folders))
     if len(digit_folders) == 0:
         next_training_run_id = 0
@@ -81,9 +82,16 @@ def get_training_run_id():
         digits = map(int, digit_folders)
         max_digit = max(digits)
         next_training_run_id = max_digit + 1
-    return str(next_training_run_id)
 
-def write_evaluation_json(training_run_id, filename, json_content):
+    next_training_run_id = str(next_training_run_id)
+    next_training_run_id = next_training_run_id.zfill(4)
+    os.makedirs(f"evaluations/{next_training_run_id}")
+    return next_training_run_id
+
+def write_evaluation_json(training_run_id, filename, content):
     path = f"evaluations/{training_run_id}/{filename}.json"
-    json.dump(path, json_content)
+    json_content = json.dumps(content)
+
+    with open(path, "w") as f:
+        f.write(json_content)
 

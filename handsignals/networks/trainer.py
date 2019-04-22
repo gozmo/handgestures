@@ -6,6 +6,8 @@ import numpy as np
 import torch
 from handsignals.core.events import register_event
 from handsignals.core import state
+from handsignals.evaluate import evaluate_io
+from handsignals.evaluate.evaluate_model import evaluate_model
 
 def train(learning_rate, epochs, batch_size, resume):
     global_state = state.get_global_state()
@@ -25,5 +27,6 @@ def train(learning_rate, epochs, batch_size, resume):
     conv_model.save()
 
     evaluate_io.write_loss(loss)
-    evaluate_model(conv_model)
     del conv_model
+
+    evaluate_model()

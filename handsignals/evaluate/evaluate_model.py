@@ -1,8 +1,11 @@
 from handsignals.evaluate.evaluate_io import write_loss
 from handsignals.evaluate.evaluate_io import write_prediction_results
 from handsignals.evaluate.evaluate_io import write_confusion_matrix
-from handsignals.evaluate.evaluate_io import write_prediction_distribution
 from handsignals.dataset import file_utils
+from handsignals.dataset.image_dataset import HoldoutDataset
+from handsignals.dataset.image_dataset import LabeledDataset
+from handsignals.networks.classify import classify_dataset
+
 
 def evaluate_model_on_dataset(dataset):
     predictions = classify_dataset(dataset)
@@ -17,7 +20,7 @@ def calculate_confusion_matrix(results):
         confusion_matrix[label] = inner_dict
 
     for result in results:
-        confusion_matrix[result.true_label][result.predicted_label] += 1
+        confusion_matrix[result.true_label][result.label] += 1
 
     return confusion_matrix
 

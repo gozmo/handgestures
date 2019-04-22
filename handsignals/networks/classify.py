@@ -39,6 +39,7 @@ def classify_image(image):
 
 
 def classify_dataset(dataset):
+    setup_model()
     global model
     predictions = []
 
