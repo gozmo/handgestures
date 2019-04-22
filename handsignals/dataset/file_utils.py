@@ -74,12 +74,16 @@ def make_training_run_dir(training_run_id):
 
 def get_training_run_id():
     folders = os.listdir("training_runs")
-    digit_folders = filter(str.isdigit, folders)
+    digit_folders = list(filter(str.isdigit, folders))
     if len(digit_folders) == 0:
         next_training_run_id = 0
     else:
-        digits = map(int, digit_folders))
+        digits = map(int, digit_folders)
         max_digit = max(digits)
         next_training_run_id = max_digit + 1
     return str(next_training_run_id)
+
+def write_evaluation_json(training_run_id, filename, json_content):
+    path = f"evaluations/{training_run_id}/{filename}.json"
+    json.dump(path, json_content)
 

@@ -20,7 +20,6 @@ class ImageDataset(Dataset):
         if self.__folder == Directories.UNLABEL:
             self.__files = self.__get_unlabeled_image_file_paths()
             self.__labels = None
-            self.__unlabel_data = True
         elif self.__folder == Directories.LABEL:
             self.__files , self.__labels = self.__get_labeled_files()
         elif self.__folder == Directories.HOLDOUT:
@@ -62,7 +61,7 @@ class ImageDataset(Dataset):
     def __getitem__(self, idx):
         filepath = self.__files[idx]
 
-        if self.__unlabel_data:
+        if self.__folder == Directories.UNLABEL:
             label_vector = [0]
         else:
             string_label = self.__labels[idx]
@@ -91,7 +90,7 @@ class ImageDataset(Dataset):
 
     def subdataset(self, indices):
         sub_files = [self.__files[i] for i in indices]
-        return ImageDataset(self.__unlabel_data, sub_files)
+        return ImageDataset(sub_files)
 
 class UnlabeledDataset(ImageDataset):
     def __init__(self):

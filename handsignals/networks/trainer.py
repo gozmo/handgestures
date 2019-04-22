@@ -5,9 +5,11 @@ from handsignals.constants import Event
 import numpy as np
 import torch
 from handsignals.core.events import register_event
+from handsignals.core import state
 
-def train( learning_rate, epochs, batch_size,resume):
-    register_event(Event.STARTED_TRAINING)
+def train(learning_rate, epochs, batch_size, resume):
+    global_state = state.get_global_state()
+    global_state.new_training_run()
 
     dataset = LabeledDataset()
 
@@ -15,10 +17,13 @@ def train( learning_rate, epochs, batch_size,resume):
     if resume:
         conv_model.load()
 
-    conv_model.train(dataset,
-                     learning_rate=learning_rate,
-                     epochs=epochs,
-                     batch_size=batch_size)
+    loss = conv_model.train(dataset,
+                            learning_rate=learning_rate,
+                            epochs=epochs,
+                            batch_size=batch_size)
+
     conv_model.save()
+
+    evaluate_io.write_loss(loss)
+    evaluate_model(conv_model)
     del conv_model
-    register_event(Event.TRAINING_DONE)

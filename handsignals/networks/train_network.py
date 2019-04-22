@@ -9,6 +9,7 @@ def train_model(model, dataloader, criterion, optimizer, num_epochs, is_inceptio
     since = time.time()
 
     val_acc_history = []
+    val_loss_history = []
 
     best_model_wts = copy.deepcopy(model.state_dict())
     best_acc = 0.0
@@ -73,6 +74,7 @@ def train_model(model, dataloader, criterion, optimizer, num_epochs, is_inceptio
                 best_model_wts = copy.deepcopy(model.state_dict())
             if phase == 'val':
                 val_acc_history.append(epoch_acc)
+                val_loss_history.append(epoch_loss)
 
         print()
 
@@ -82,4 +84,4 @@ def train_model(model, dataloader, criterion, optimizer, num_epochs, is_inceptio
 
     # load best model weights
     model.load_state_dict(best_model_wts)
-    return model, val_acc_history
+    return model, val_loss_history

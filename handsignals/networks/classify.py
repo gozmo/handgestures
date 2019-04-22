@@ -50,13 +50,15 @@ def classify_dataset(dataset):
     for batch in dataloader:
         a = torch.cuda.memory_allocated(device=device)
         images = batch["image"]
+        labels = batch["label"]
 
         prediction_distributions =  model.classify_batch(images)
 
         for index in range(len(prediction_distributions)):
             prediction_distribution = prediction_distributions[index]
+            label = labels[index]
 
-            prediction_result = PredictionResult(prediction_distribution)
+            prediction_result = PredictionResult(prediction_distribution, label)
 
             predictions.append(prediction_result)
 
