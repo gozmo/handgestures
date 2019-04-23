@@ -86,7 +86,7 @@ class ImageDataset(Dataset):
         return len(self.__available_labels)
 
     def all_labels(self):
-        return self.__available_labels
+        return self.__labels
 
     def subdataset(self, indices):
         sub_files = [self.__files[i] for i in indices]

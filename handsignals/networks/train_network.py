@@ -75,6 +75,9 @@ def train_model(model, dataloader, criterion, optimizer, num_epochs, is_inceptio
             if phase == 'val':
                 val_acc_history.append(epoch_acc)
                 val_loss_history.append(epoch_loss)
+            elif phase == "train":
+                train_acc_history.append(epoch_acc)
+                train_loss_history.append(epoch_loss)
 
         print()
 
@@ -84,4 +87,5 @@ def train_model(model, dataloader, criterion, optimizer, num_epochs, is_inceptio
 
     # load best model weights
     model.load_state_dict(best_model_wts)
-    return model, val_loss_history
+    return model, val_loss_history, train_loss_history
+

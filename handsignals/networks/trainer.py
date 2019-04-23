@@ -15,18 +15,21 @@ def train(learning_rate, epochs, batch_size, resume):
 
     dataset = LabeledDataset()
 
+    evaluate_io.write_parameters(learning_rate, epochs, batch_size)
+    evaluate_io.write_dataset_stats(dataset)
+
     conv_model = ConvNet(dataset.number_of_classes())
     if resume:
         conv_model.load()
 
-    loss = conv_model.train(dataset,
-                            learning_rate=learning_rate,
-                            epochs=epochs,
-                            batch_size=batch_size)
+    validation_loss, training_loss = conv_model.train(dataset,
+                                                      learning_rate=learning_rate,
+                                                      epochs=epochs,
+                                                      batch_size=batch_size)
 
     conv_model.save()
 
-    evaluate_io.write_loss(loss)
+    evaluate_io.write_loss(validation_loss, training_loss)
     del conv_model
 
     evaluate_model()

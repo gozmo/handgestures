@@ -25,13 +25,13 @@ class ConvNet:
                 lr=learning_rate)
         loss = BCEWithLogitsLoss()
         self.cnn_model.to(device)
-        trained_model, loss_per_epoch = train_model(self.cnn_model,
+        trained_model, validation_loss, training_loss= train_model(self.cnn_model,
                 dataloader,
                 loss,
                 optimizer,
                 epochs)
         self.cnn_model = trained_model
-        return loss_per_epoch
+        return validation_loss, training_loss
 
     def classify(self, image):
         image = np.asarray([image])
