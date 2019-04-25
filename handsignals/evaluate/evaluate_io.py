@@ -9,6 +9,7 @@ def __write_content(filename, content):
     json_content= json.dumps(content)
     file_utils.write_evaluation_json(training_run_id, filename, json_content)
 
+
 def write_loss(validation_loss, training_loss):
     __write_content("training_loss", training_loss)
     __write_content("validation_loss", validation_loss)
@@ -36,3 +37,6 @@ def write_parameters(learning_rate, epochs, batch_size):
                   "batch_size": batch_size}
     __write_content("parameters", parameters)
 
+def read_confusion_matrix(training_run_id):
+    confusion_matrix = file_utils.read_evaluation_json(training_run_id, "confusion_matrix")
+    return confusion_matrix

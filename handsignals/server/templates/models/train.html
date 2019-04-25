@@ -1,0 +1,20 @@
+{% extends "models/base.html" %} 
+
+{% block inner_content %}
+<form action="" method="POST" onsubmit="" name=train>
+    Learning Rate: <input type=text name=learning_rate value=0.001>
+    Batch Size: <input type=text name=batch_size value=32>
+    Epochs: <input type=text name=epochs value=25>
+
+
+    <p>
+    <input type=submit value=train name=action>
+    </p>
+
+    <p>
+    <input type=submit value=resume_training name=action>
+    </p>
+</form>
+
+{% endblock %}
+

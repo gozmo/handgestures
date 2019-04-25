@@ -15,6 +15,7 @@ from handsignals.networks import trainer
 from handsignals.networks.classify import classify_dataset
 from handsignals.networks.classify import classify_image
 from handsignals.networks.classify import setup_model
+from handsignals.evaluate import evaluate_io
 
 WIDTH = 640
 HEIGHT = 400
@@ -82,3 +83,15 @@ def live_view():
         image_filename= ""
         classification = ""
     return image_filename, classification
+
+def results(selected_training_run_id):
+    training_runs = file_utils.get_training_runs()
+    sorted(training_runs, reverse=True)
+    if selected_training_run_id is None:
+        selected_training_run_id = training_runs[0]
+
+    confusion_matrix = evaluate_io.read_confusion_matrix(selected_training_run_id)
+    label_order = file_utils.get_labels()
+
+    return training_runs, label_order, confusion_matrix
+

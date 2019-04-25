@@ -95,3 +95,18 @@ def write_evaluation_json(training_run_id, filename, content):
     with open(path, "w") as f:
         f.write(json_content)
 
+def read_evaluation_json(training_run_id, filename):
+    path = f"evaluations/{training_run_id}/{filename}.json"
+
+    with open(path, "r") as f:
+        filecontent = f.read()
+
+    json_content = json.loads(filecontent) 
+    json_content = json.loads(json_content) 
+
+    return json_content
+
+def get_training_runs():
+    training_runs = os.listdir("evaluations")
+    return training_runs
+

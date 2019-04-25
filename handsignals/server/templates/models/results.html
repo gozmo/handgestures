@@ -1,0 +1,38 @@
+{% extends "models/base.html" %} 
+
+{% block inner_content %}
+<form action="results" target="select" method="post">
+    <p>Training Run</p>
+    <select name="training_run_id">
+        {% for training_run_id in training_run_ids %}
+            {% if training_run_id == selected_training_run_id %}
+                <option value ={{training_run_id}} selected> {{training_run_id}} </option>
+            {% else %}
+                <option value ={{training_run_id}}> {{training_run_id}} </option>
+            {% endif %}
+        {% endfor %}
+    </select> 
+    <p><input type="submit" value="Choose"></p>
+</form>
+
+<p> Confusion Matrix <p>
+
+<table>
+    <tr>
+        <th> </th>
+        {% for label  in label_order %}
+            <th> {{label}} </th>
+        {% endfor %}
+    </tr>
+
+    {% for row_label in label_order %}
+        <tr>
+           <td> {{row_label}}
+        {% for column_label in label_order  %}
+            <td> {{confusion_matrix[row_label][column_label]}} </td>
+        {% endfor %}
+        </tr>
+    {% endfor %}
+</table>
+{% endblock %}
+

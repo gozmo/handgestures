@@ -67,8 +67,12 @@ def index():
 def status():
     return "status: ok"
 
-@app.route('/models', methods=["GET", "POST"])
+@app.route("/models")
 def models():
+    return render_template("models/base.html")
+
+@app.route('/models/train', methods=["GET", "POST"])
+def train():
     if request.method == "POST":
         post_dict= request.form.to_dict()
         learning_rate = float(post_dict["learning_rate"])
@@ -85,7 +89,26 @@ def models():
                     epochs=epochs,
                     resume=resume)
 
-    return render_template("models/base.html")
+    return render_template("models/train.html")
+
+@app.route("/models/results", methods=["GET", "POST"])
+def results():
+    selected_training_run_id = None
+
+    if request.method == "POST":
+        post_dict= request.form.to_dict()
+        selected_training_run_id = post_dict["training_run_id"]
+
+
+    training_run_ids, label_order,confusion_matrix = main.results(selected_training_run_id)
+
+    import pprint; pprint.pprint(confusion_matrix)
+
+    return render_template("models/results.html",
+                           label_order=label_order,
+                           training_run_ids=training_run_ids,
+                           selected_training_run_id=selected_training_run_id,
+                           confusion_matrix=confusion_matrix)
 
 @app.route('/live', methods=["GET", "POST"])
 def live():

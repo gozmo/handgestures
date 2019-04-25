@@ -11,6 +11,9 @@ def train_model(model, dataloader, criterion, optimizer, num_epochs, is_inceptio
     val_acc_history = []
     val_loss_history = []
 
+    train_acc_history = []
+    train_loss_history = []
+
     best_model_wts = copy.deepcopy(model.state_dict())
     best_acc = 0.0
 
