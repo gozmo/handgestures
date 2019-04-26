@@ -10,12 +10,17 @@ app = Flask(__name__, template_folder="handsignals/server/templates", static_url
 @app.route('/<path:filename>')
 def image(filename):
     print("route_image", filename)
-    return main.read_images(filename, request)
+    return main.read_images(filename)
 
 @app.route('/unlabeled/<string:filename>')
 def unlabeled(filename):
     filepath = f"dataset/unlabeled/{filename}"
-    return main.read_images(filepath, request)
+    return main.read_images(filepath)
+
+@app.route('/evaluations/<string:training_run_id>/<string:filename>')
+def evaluation(training_run_id, filename):
+    filepath = f"evaluations/{training_run_id}/{filename}"
+    return main.read_images(filepath)
 
 @app.route('/capture', methods=["GET", "POST"])
 def capture():
@@ -104,12 +109,13 @@ def results():
     parameters, \
     label_order, \
     confusion_matrix, \
-    dataset_stats, \
-    loss_url = main.results(selected_training_run_id)
+    dataset_stats = main.results(selected_training_run_id)
 
     return render_template("models/results.html",
                            parameters=parameters,
+                           training_run_id=selected_training_run_id,
                            label_order=label_order,
+                           dataset_stats=dataset_stats,
                            training_run_ids=training_run_ids,
                            selected_training_run_id=selected_training_run_id,
                            confusion_matrix=confusion_matrix)

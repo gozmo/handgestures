@@ -24,7 +24,7 @@ def capture(frames_to_capture):
     frame_handling = FrameHandling()
     _ = frame_handling.collect_data(frames_to_capture)
 
-def read_images(filepath, request):
+def read_images(filepath):
     filename = os.path.basename(filepath)
     folder_path = os.path.dirname(filepath)
 
@@ -96,12 +96,11 @@ def results(training_run_id):
     label_order = file_utils.get_labels()
 
     dataset_stats = evaluate_io.read_dataset_stats(training_run_id)
-    loss_url = evaluate_io.plot_loss_and_save_image(training_run_id)
+    _ = evaluate_io.plot_loss_and_save_image(training_run_id)
 
     return training_runs, \
            parameters, \
            label_order, \
            confusion_matrix, \
            dataset_stats, \
-           loss_url
 
