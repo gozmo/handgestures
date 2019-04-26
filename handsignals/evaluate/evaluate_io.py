@@ -2,6 +2,7 @@ import json
 from collections import Counter
 from handsignals.core import state
 from handsignals.dataset import file_utils
+import matplotlib.pyplot as plt
 
 def __write_content(filename, content):
     global_state = state.get_global_state()
@@ -37,6 +38,24 @@ def write_parameters(learning_rate, epochs, batch_size):
                   "batch_size": batch_size}
     __write_content("parameters", parameters)
 
+def read_parameters(training_run_id):
+    parameters = file_utils.read_evaluation_json(training_run_id, "parameters")
+    return parameters
+
 def read_confusion_matrix(training_run_id):
     confusion_matrix = file_utils.read_evaluation_json(training_run_id, "confusion_matrix")
     return confusion_matrix
+
+def read_dataset_stats(training_run_id):
+    dataset_stats = file_utils.read_evaluation_json(training_run_id, "dataset_stats")
+    return dataset_stats
+
+def plot_loss_and_save_image(training_run_id):
+    training_loss= file_utils.read_evaluation_json(training_run_id, "training_loss")
+    validation_loss = file_utils.read_evaluation_json(training_run_id, "validation_loss")
+    plt.plot(training_loss)
+    plt.plot(validation_loss)
+    plt.savefig(f"evaluations/{training_run_id}/loss.jpg")
+    return f"{training_run_id}/loss.jpg"
+
+

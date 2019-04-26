@@ -100,11 +100,15 @@ def results():
         selected_training_run_id = post_dict["training_run_id"]
 
 
-    training_run_ids, label_order,confusion_matrix = main.results(selected_training_run_id)
-
-    import pprint; pprint.pprint(confusion_matrix)
+    training_run_ids, \
+    parameters, \
+    label_order, \
+    confusion_matrix, \
+    dataset_stats, \
+    loss_url = main.results(selected_training_run_id)
 
     return render_template("models/results.html",
+                           parameters=parameters,
                            label_order=label_order,
                            training_run_ids=training_run_ids,
                            selected_training_run_id=selected_training_run_id,

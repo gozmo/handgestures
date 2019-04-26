@@ -15,7 +15,17 @@
     <p><input type="submit" value="Choose"></p>
 </form>
 
-<p> Confusion Matrix <p>
+<b> Parameters <b>
+<table>
+{% for key, value in parameters.items() %}
+    <tr>
+    <td>{{key}}</td>
+    <td>{{value}}</td>
+    </tr>
+{% endfor %}
+</table>
+
+<b> Confusion Matrix <b>
 
 <table>
     <tr>
