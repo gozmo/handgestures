@@ -84,11 +84,14 @@ def live_view():
         classification = ""
     return image_filename, classification
 
-def results(training_run_id):
+def results(user_selected_training_run_id):
     training_runs = file_utils.get_training_runs()
-    sorted(training_runs, reverse=True)
-    if training_run_id is None:
+    training_runs = sorted(training_runs, reverse=True)
+    if user_selected_training_run_id is None:
         training_run_id = training_runs[0]
+    else:
+        training_run_id = user_selected_training_run_id
+
 
     parameters = evaluate_io.read_parameters(training_run_id)
 
@@ -96,9 +99,11 @@ def results(training_run_id):
     label_order = file_utils.get_labels()
 
     dataset_stats = evaluate_io.read_dataset_stats(training_run_id)
-    _ = evaluate_io.plot_loss_and_save_image(training_run_id)
+    evaluate_io.plot_loss_and_save_image(training_run_id)
+    evaluate_io.plot_prediction_distribution(training_run_id)
 
-    return training_runs, \
+    return training_run_id, \
+           training_runs, \
            parameters, \
            label_order, \
            confusion_matrix, \

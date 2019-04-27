@@ -44,6 +44,10 @@
 
 <table>
     <tr>
+        <th colspan=100%>Predicted label</th>
+
+    </tr>
+    <tr>
         <th> </th>
         {% for label  in label_order %}
             <th> {{label}} </th>
@@ -62,6 +66,13 @@
 
 
 <b> Loss </b>
-<a href="{{url_for('evaluation', training_run_id='0004', filename='loss.jpg')}}">
+<a href={{url_for('evaluation', training_run_id=training_run_id, filename='loss.jpg')}}>
+    <img src={{url_for('evaluation', training_run_id=training_run_id, filename='loss.jpg')}}>
+</a>
+
+<b> Prediction Distribution</b>
+<a href={{url_for('evaluation', training_run_id=training_run_id, filename='prediction_distribution.jpg')}}>
+    <img src={{url_for('evaluation', training_run_id=training_run_id, filename='prediction_distribution.jpg')}}>
+</a>
 
 {% endblock %}

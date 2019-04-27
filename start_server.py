@@ -105,6 +105,7 @@ def results():
         selected_training_run_id = post_dict["training_run_id"]
 
 
+    training_run_id, \
     training_run_ids, \
     parameters, \
     label_order, \
@@ -113,11 +114,10 @@ def results():
 
     return render_template("models/results.html",
                            parameters=parameters,
-                           training_run_id=selected_training_run_id,
+                           training_run_id=training_run_id,
                            label_order=label_order,
                            dataset_stats=dataset_stats,
                            training_run_ids=training_run_ids,
-                           selected_training_run_id=selected_training_run_id,
                            confusion_matrix=confusion_matrix)
 
 @app.route('/live', methods=["GET", "POST"])

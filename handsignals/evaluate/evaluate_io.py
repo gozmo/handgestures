@@ -3,6 +3,7 @@ from collections import Counter
 from handsignals.core import state
 from handsignals.dataset import file_utils
 import matplotlib.pyplot as plt
+from collections import defaultdict
 
 def __write_content(filename, content):
     global_state = state.get_global_state()
@@ -53,9 +54,35 @@ def read_dataset_stats(training_run_id):
 def plot_loss_and_save_image(training_run_id):
     training_loss= file_utils.read_evaluation_json(training_run_id, "training_loss")
     validation_loss = file_utils.read_evaluation_json(training_run_id, "validation_loss")
-    plt.plot(training_loss)
-    plt.plot(validation_loss)
-    plt.savefig(f"evaluations/{training_run_id}/loss.jpg")
-    return f"{training_run_id}/loss.jpg"
+
+    fig, ax = plt.subplots(nrows=1, ncols=1)
+    ax.plot(training_loss, label="training")
+    ax.plot(validation_loss, label="validation")
+    ax.legend()
+    fig.savefig(f"evaluations/{training_run_id}/loss.jpg")
+    return
+
+def plot_prediction_distribution(training_run_id):
+    results = file_utils.read_evaluation_json(training_run_id, "prediction_results")
+
+    dists = defaultdict(list)
+    for result_elem in results:
+        for label, score in result_elem['prediction_distribution'].items():
+            dists[label].append(score)
+
+    fig, ax = plt.subplots(nrows=1, ncols=1)
+    for label, dist in dists.items():
+        ax.hist(dist, label=label, alpha=0.4)
+
+    ax.legend()
+    ax.set_xlim(0,1)
+    fig.savefig(f"evaluations/{training_run_id}/prediction_distribution.jpg")
+    return
+
+
+
+
+
+
 
 

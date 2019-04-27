@@ -62,7 +62,9 @@ class ImageDataset(Dataset):
         filepath = self.__files[idx]
 
         if self.__folder == Directories.UNLABEL:
-            label_vector = [0]
+            label_vector = np.zeros(len(self.__available_labels))
+            label_int = Labels.label_to_int(Labels.none)
+            label_vector[label_int] = 1
         else:
             string_label = self.__labels[idx]
             label_int = Labels.label_to_int(string_label)
