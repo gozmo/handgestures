@@ -102,10 +102,13 @@ def results(user_selected_training_run_id):
     evaluate_io.plot_loss_and_save_image(training_run_id)
     evaluate_io.plot_prediction_distribution(training_run_id)
 
+    f1_scores = evaluate_io.read_f1_score(training_run_id)
+
     return training_run_id, \
            training_runs, \
            parameters, \
            label_order, \
            confusion_matrix, \
            dataset_stats, \
+           f1_scores
 

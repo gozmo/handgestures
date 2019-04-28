@@ -110,7 +110,8 @@ def results():
     parameters, \
     label_order, \
     confusion_matrix, \
-    dataset_stats = main.results(selected_training_run_id)
+    dataset_stats, \
+    f1_scores = main.results(selected_training_run_id)
 
     return render_template("models/results.html",
                            parameters=parameters,
@@ -118,7 +119,8 @@ def results():
                            label_order=label_order,
                            dataset_stats=dataset_stats,
                            training_run_ids=training_run_ids,
-                           confusion_matrix=confusion_matrix)
+                           confusion_matrix=confusion_matrix,
+                           f1_scores=f1_scores)
 
 @app.route('/live', methods=["GET", "POST"])
 def live():

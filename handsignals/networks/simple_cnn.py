@@ -92,5 +92,5 @@ class ConvNetModel(nn.Module):
         out = out.reshape(out.size(0), -1)
         out = self.fc1(out)
         out = self.fc2(out)
-        out = self.softmax(out)
+        out = self.softmax(out/100)
         return out

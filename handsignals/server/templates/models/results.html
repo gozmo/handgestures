@@ -64,6 +64,26 @@
     {% endfor %}
 </table>
 
+<b> F1 Scores </b>
+
+<a> F1 score: {{f1_scores["f1"]}}</a>
+<table>
+    <tr>
+        <th> Label </th>
+        <th> F1 </th>
+        <th> Precision </th>
+        <th> Recall </th>
+    </tr>
+    {% for label in label_order %}
+        <tr>
+            <td> {{label}} </td>
+            <td> {{f1_scores["label_f1"][label]["f1"]}} </td>
+            <td> {{f1_scores["label_f1"][label]["recall"]}} </td>
+            <td> {{f1_scores["label_f1"][label]["precision"]}} </td>
+        </tr>
+    {% endfor %}
+</table>
+
 
 <b> Loss </b>
 <a href={{url_for('evaluation', training_run_id=training_run_id, filename='loss.jpg')}}>
