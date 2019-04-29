@@ -10,25 +10,19 @@
 
 <form id="label_form" action="" method="POST" onsubmit"" name="annotate_form">
     <table>
-        {% for predicted_label in aided_annotations %}
-            {% for (filename, distribution) in aided_annotations[predicted_label] %}
-                <tr>
-                    <td>
-                        <a class="image" href="{{url_for('unlabeled', filename=filename)}}" style="width: {{ filename.width }}px; height: {{ filename.height }}px">
-                            <img src={{url_for('unlabeled', filename=filename)}} width="{{ filename.width }}" height="{{ filename.height }}" />
-                        </a>
-                    </td>
-                    <td>
-                        {% for label in all_labels %}
-                            {% if label == predicted_label %}
-                                <input type=radio name={{filename}} value={{label}} checked>{{label}}  {{distribution[label]}}</br>
-                            {% else %}
-                                <input type=radio name={{filename}} value={{label}}>{{label}}  {{distribution[label]}}</br>
-                            {% endif %}
-                        {% endfor %}
-                    </td>
-                </tr>
-            {% endfor %}
+        {% for (filename, distribution) in aided_annotations %}
+            <tr>
+                <td>
+                    <a class="image" href="{{url_for('unlabeled', filename=filename)}}" style="width: {{ filename.width }}px; height: {{ filename.height }}px">
+                        <img src={{url_for('unlabeled', filename=filename)}} width="{{ filename.width }}" height="{{ filename.height }}" />
+                    </a>
+                </td>
+                <td>
+                    {% for label in all_labels %}
+                        <input type=radio name={{filename}} value={{label}}>{{label}}  {{distribution[label]}}</br>
+                    {% endfor %}
+                </td>
+            </tr>
         {% endfor %}
 
     </table>

@@ -19,6 +19,8 @@ def render_annotate(request):
     path = "dataset/unlabeled"
 
     for root, dirs, files in os.walk(path):
+        files = sorted(files)
+        files = files[0:1]
         for filename, name in [(os.path.join(root, name), name) for name in files]:
             if not filename.endswith('.jpg'):
                 continue

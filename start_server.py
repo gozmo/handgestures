@@ -32,37 +32,37 @@ def capture():
     return render_template("capture/capture.html")
 
 @app.route("/data")
-@app.route("/data/<task>", methods=["GET", "POST"])
-def data(task=None):
-    print(f"data task: {task}")
-    if task is None:
-        return render_template(f"data/base.html")
-    elif task == "annotate":
-        return data_template.render_annotate(request)
-    elif task == "active_learning":
-        if request.method == "POST":
-            post_dict= request.form.to_dict()
-            if "batch_size" in post_dict:
-                batch_size = int(post_dict["batch_size"])
-                main.set_active_learning_batch_size(batch_size)
-            else:
-                main.annotate(post_dict)
-        active_learning_query, all_labels = main.active_learning()
+def data():
+    return render_template(f"data/base.html")
 
-        return render_template("data/active_learning.html", active_learning_query=active_learning_query, all_labels=all_labels)
+@app.route("/data/annotate", methods=["GET", "POST"])
+def annotate():
+    return data_template.render_annotate(request)
 
-    elif task == "aided_annotation":
-        if request.method == "POST":
-            post_dict= request.form.to_dict()
-            if "batch_size" in post_dict:
-                batch_size = int(post_dict["batch_size"])
-                main.set_aided_annotation_batch_size(batch_size)
-            else:
-                main.annotate(post_dict)
-        aided_annotations, all_labels = main.aided_annotation()
-        return render_template("data/aided_annotation.html", aided_annotations=aided_annotations, all_labels=all_labels)
-    else:
-        return render_template(f"data/{task}.html")
+@app.route("/data/active_learning", methods=["GET", "POST"])
+def active_learning():
+    if request.method == "POST":
+        post_dict= request.form.to_dict()
+        if "batch_size" in post_dict:
+            batch_size = int(post_dict["batch_size"])
+            main.set_active_learning_batch_size(batch_size)
+        else:
+            main.annotate(post_dict)
+    active_learning_query, all_labels = main.active_learning()
+
+    return render_template("data/active_learning.html", active_learning_query=active_learning_query, all_labels=all_labels)
+
+@app.route("/data/aided_annotation", methods=["GET", "POST"])
+def aided_annotation():
+    if request.method == "POST":
+        post_dict= request.form.to_dict()
+        if "batch_size" in post_dict:
+            batch_size = int(post_dict["batch_size"])
+            main.set_aided_annotation_batch_size(batch_size)
+        else:
+            main.annotate(post_dict)
+    aided_annotations, all_labels = main.aided_annotation()
+    return render_template("data/aided_annotation.html", aided_annotations=aided_annotations, all_labels=all_labels)
 
 @app.route("/index")
 def index():
