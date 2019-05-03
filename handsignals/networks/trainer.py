@@ -27,7 +27,10 @@ def train(learning_rate, epochs, batch_size, resume):
                                                       epochs=epochs,
                                                       batch_size=batch_size)
 
-    conv_model.save()
+
+    path = global_state.training_run_folder()
+    conv_model.save(path + "/torch.model")
+    conv_model.save("./torch.model")
 
     evaluate_io.write_loss(validation_loss, training_loss)
     del conv_model

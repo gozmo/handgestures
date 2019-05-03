@@ -25,6 +25,9 @@ class GlobalState:
     def set_aided_annotation_refreshed(self):
         self.__refresh_aided_annotation = False
 
+    def training_run_folder(self):
+        return f"evaluations/{self.__training_run_id}"
+
 __global_state = GlobalState()
 
 def get_global_state():

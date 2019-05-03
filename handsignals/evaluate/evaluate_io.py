@@ -16,13 +16,13 @@ def write_loss(validation_loss, training_loss):
     __write_content("training_loss", training_loss)
     __write_content("validation_loss", validation_loss)
 
-def write_prediction_results(prediction_results):
+def write_prediction_results(prediction_results, prefix):
     json_results = [elem.to_json() for elem in prediction_results]
 
-    __write_content("prediction_results", json_results)
+    __write_content(f"{prefix}-prediction_results", json_results)
 
-def write_confusion_matrix(confusion_matrix):
-    __write_content("confusion_matrix", confusion_matrix)
+def write_confusion_matrix(confusion_matrix, prefix):
+    __write_content(f"{prefix}-confusion_matrix", confusion_matrix)
 
 def write_dataset_stats(dataset):
     label_statistics = Counter(dataset.all_labels())
@@ -39,8 +39,8 @@ def write_parameters(learning_rate, epochs, batch_size):
                   "batch_size": batch_size}
     __write_content("parameters", parameters)
 
-def write_f1_scores(f1_scores):
-    __write_content("f1_scores", f1_scores)
+def write_f1_scores(f1_scores, prefix):
+    __write_content(f"{prefix}-f1_scores", f1_scores)
 
 def read_parameters(training_run_id):
     parameters = file_utils.read_evaluation_json(training_run_id, "parameters")

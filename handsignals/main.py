@@ -16,6 +16,7 @@ from handsignals.networks.classify import classify_dataset
 from handsignals.networks.classify import classify_image
 from handsignals.networks.classify import setup_model
 from handsignals.evaluate import evaluate_io
+from handsignals.evaluate.evaluate_model import evaluate_model as evaluate_network
 
 WIDTH = 640
 HEIGHT = 400
@@ -92,23 +93,33 @@ def results(user_selected_training_run_id):
     else:
         training_run_id = user_selected_training_run_id
 
+    results = EvaluationResults(training_run_id)
 
-    parameters = evaluate_io.read_parameters(training_run_id)
+    results.add_label_order(file_utils.get_labels())
 
-    confusion_matrix = evaluate_io.read_confusion_matrix(training_run_id)
-    label_order = file_utils.get_labels()
+    results.add_parameters(evaluate_io.read_parameters(training_run_id))
+    results.add_dataset_stats(evaluate_io.read_dataset_stats(training_run_id))
 
-    dataset_stats = evaluate_io.read_dataset_stats(training_run_id)
     evaluate_io.plot_loss_and_save_image(training_run_id)
-    evaluate_io.plot_prediction_distribution(training_run_id)
+    results.add_image("loss", "loss.jpg")
 
-    f1_scores = evaluate_io.read_f1_score(training_run_id)
+    results.add_matrix("holdout_confusion_matrix",
+                       evaluate_io.read_confusion_matrix(training_run_id, "holdout")
+    evaluate_io.plot_prediction_distribution(training_run_id, "holdout")
+    results.add_image("holdout_prediction_distribution")
+    results.add_matrix("f1_holdout",
+                       evaluate_io.read_f1_score(training_run_id, "holdout"))
 
-    return training_run_id, \
-           training_runs, \
-           parameters, \
-           label_order, \
-           confusion_matrix, \
-           dataset_stats, \
-           f1_scores
+
+
+    results.add_matrix("labeled_confusion_matrix", evaluate_io.read_confusion_matrix(training_run_id, "labeled"))
+    evaluate_io.plot_prediction_distribution(training_run_id, "labeled")
+    results.add_image("labeled_prediction_distribution")
+    results.add_matrix("f1_labeled",
+                       evaluate_io.read_f1_score(training_run_id, "labeled"))
+
+    return training_runs, results
+
+def evaluate_model():
+    evaluate_network()
 

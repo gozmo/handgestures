@@ -74,21 +74,24 @@ def calculate_confusion_matrix(results):
 
     return confusion_matrix
 
+def __evaluate_pipeline(dataset, name_prefix):
+    results = evaluate_model_on_dataset(dataset)
+
+    write_prediction_results(results, name_prefix)
+
+    confusion_matrix = calculate_confusion_matrix(results)
+    write_confusion_matrix(confusion_matrix, name_prefix)
+
+    f1_scores = __calculate_f1_scores(confusion_matrix)
+    write_f1_scores(f1_scores, name_prefix)
+
 def evaluate_model():
 
     # Holdout
     holdout_dataset = HoldoutDataset()
-    holdout_results = evaluate_model_on_dataset(holdout_dataset)
-
-    write_prediction_results(holdout_results)
-
-    holdout_confusion_matrix = calculate_confusion_matrix(holdout_results)
-    write_confusion_matrix(holdout_confusion_matrix)
-
-    f1_scores = __calculate_f1_scores(holdout_confusion_matrix)
-    write_f1_scores(f1_scores)
+    __evaluate_pipeline(holdout_dataset, "holdout")
 
     # Labeled dataset
     labeled_dataset = LabeledDataset()
-    labeled_results = evaluate_model_on_dataset(labeled_dataset)
+    __evaluate_pipeline(labeled_dataset, "labeled")
 

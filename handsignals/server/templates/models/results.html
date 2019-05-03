@@ -15,9 +15,9 @@
     <p><input type="submit" value="Choose"></p>
 </form>
 
-<b> Parameters <b>
+<h1> <b> Parameters <b> </h1>
 <table>
-{% for parameter_name, parameter_value in parameters.items() %}
+{% for parameter_name, parameter_value in results.parameters.items() %}
     <tr>
         <td>{{parameter_name}}</td>
         <td>{{parameter_value}}</td>
@@ -25,10 +25,10 @@
 {% endfor %}
 </table>
 
-<b> Dataset stats </b>
+<h1> <b> Dataset stats </b> </h1>
 
 <table>
-    {% for label, size in dataset_stats["label_statistics"].items() %}
+    {% for label, size in results.dataset_stats["label_statistics"].items() %}
         <tr>
             <td> {{label}} </td>
             <td> {{size}} </td>
@@ -40,7 +40,7 @@
     </tr>
 </table>
 
-<b> Confusion Matrix <b>
+<h1> <b> Confusion Matrix Holdout <b> </h1>
 
 <table>
     <tr>
@@ -49,24 +49,24 @@
     </tr>
     <tr>
         <th> </th>
-        {% for label  in label_order %}
+        {% for label  in results.label_order %}
             <th> {{label}} </th>
         {% endfor %}
     </tr>
 
-    {% for row_label in label_order %}
+    {% for row_label in results.label_order %}
         <tr>
            <td> {{row_label}}
-        {% for column_label in label_order  %}
-            <td> {{confusion_matrix[row_label][column_label]}} </td>
+        {% for column_label in results.label_order  %}
+            <td> {{results.matrices["holdout_confusion_matrix"][row_label][column_label]}} </td>
         {% endfor %}
         </tr>
     {% endfor %}
 </table>
 
-<b> F1 Scores </b>
+<h1> <b> F1 Scores </b> </h1>
 
-<a> F1 score: {{f1_scores["f1"]}}</a>
+<h3> <a> F1 score: {{f1_scores["f1"]}}</a> </h3>
 <table>
     <tr>
         <th> Label </th>
@@ -74,7 +74,7 @@
         <th> Precision </th>
         <th> Recall </th>
     </tr>
-    {% for label in label_order %}
+    {% for label in results.label_order %}
         <tr>
             <td> {{label}} </td>
             <td> {{f1_scores["label_f1"][label]["f1"]}} </td>
@@ -85,12 +85,12 @@
 </table>
 
 
-<b> Loss </b>
+<h1> <b> Loss </b> </h1>
 <a href={{url_for('evaluation', training_run_id=training_run_id, filename='loss.jpg')}}>
     <img src={{url_for('evaluation', training_run_id=training_run_id, filename='loss.jpg')}}>
 </a>
 
-<b> Prediction Distribution</b>
+<h1> <b> Prediction Distribution</b> </h1>
 <a href={{url_for('evaluation', training_run_id=training_run_id, filename='prediction_distribution.jpg')}}>
     <img src={{url_for('evaluation', training_run_id=training_run_id, filename='prediction_distribution.jpg')}}>
 </a>

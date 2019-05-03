@@ -23,7 +23,7 @@ class ConvNet:
         dataloader = DataLoader(dataset, batch_size=batch_size, shuffle=True)
         optimizer = Adam(self.cnn_model.parameters(),
                 lr=learning_rate)
-        loss = BCEWithLogitsLoss()
+        loss = BCEWithLogitsLoss(reduce="sum")
         self.cnn_model.to(device)
         trained_model, validation_loss, training_loss= train_model(self.cnn_model,
                 dataloader,
@@ -46,12 +46,12 @@ class ConvNet:
         return self.cnn_model(images_torch)
 
 
-    def save(self):
-        torch.save(self.cnn_model.state_dict(), "./torch.model")
+    def save(self, path):
+        torch.save(self.cnn_model.state_dict(), path)
 
-    def load(self):
+    def load(self, path):
         self.cnn_model = ConvNetModel(self.num_classes)
-        self.cnn_model.load_state_dict(torch.load("./torch.model"))
+        self.cnn_model.load_state_dict(torch.load(path))
         self.cnn_model.double()
         self.cnn_model.to(device)
 
@@ -80,7 +80,6 @@ class ConvNetModel(nn.Module):
                 nn.MaxPool2d(kernel_size=2, stride=2))
         self.fc1 = nn.Linear(9600, 1000)
         self.fc2 = nn.Linear(1000, num_classes)
-        self.softmax = nn.Softmax()
 
         self.to(device)
 
@@ -92,5 +91,4 @@ class ConvNetModel(nn.Module):
         out = out.reshape(out.size(0), -1)
         out = self.fc1(out)
         out = self.fc2(out)
-        out = self.softmax(out/100)
         return out

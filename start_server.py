@@ -96,31 +96,13 @@ def train():
 
     return render_template("models/train.html")
 
-@app.route("/models/results", methods=["GET", "POST"])
-def results():
-    selected_training_run_id = None
+@app.route("/models/results/<string:selected_training_run_id>", methods=["GET"])
+@app.route("/models/results/", methods=["GET"])
+def results(selected_training_run_id=None):
 
-    if request.method == "POST":
-        post_dict= request.form.to_dict()
-        selected_training_run_id = post_dict["training_run_id"]
+    training_run_ids, results =  main.results(selected_training_run_id)
 
-
-    training_run_id, \
-    training_run_ids, \
-    parameters, \
-    label_order, \
-    confusion_matrix, \
-    dataset_stats, \
-    f1_scores = main.results(selected_training_run_id)
-
-    return render_template("models/results.html",
-                           parameters=parameters,
-                           training_run_id=training_run_id,
-                           label_order=label_order,
-                           dataset_stats=dataset_stats,
-                           training_run_ids=training_run_ids,
-                           confusion_matrix=confusion_matrix,
-                           f1_scores=f1_scores)
+    return render_template("models/results.html", training_run_ids=training_run_ids, results=results)
 
 @app.route('/live', methods=["GET", "POST"])
 def live():

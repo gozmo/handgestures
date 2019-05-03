@@ -25,7 +25,14 @@ class PredictionResult:
         return label
 
     def __get_active_learning_score(self):
-        nlogn = [n * math.log(n) for n in self.distribution]
+        def safe_log(n):
+            try:
+                s = math.log(n)
+            except:
+                s = 0
+            return 0
+
+        nlogn = [n * safe_log(n) for n in self.distribution]
         score = -sum(nlogn)
         return score
 
