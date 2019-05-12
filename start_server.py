@@ -89,10 +89,11 @@ def train():
             resume=False
         else:
             resume=True
+
         main.train(learning_rate=learning_rate,
-                    batch_size=batch_size,
-                    epochs=epochs,
-                    resume=resume)
+                   batch_size=batch_size,
+                   epochs=epochs,
+                   resume=resume)
 
     return render_template("models/train.html")
 

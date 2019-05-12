@@ -33,11 +33,8 @@ def write_dataset_stats(dataset):
 
     __write_content("dataset_stats", dataset_statistics)
 
-def write_parameters(learning_rate, epochs, batch_size):
-    parameters = {"learning_rate": learning_rate,
-                  "epochs": epochs,
-                  "batch_size": batch_size}
-    __write_content("parameters", parameters)
+def write_parameters(model_parameters):
+    __write_content("parameters", model_parameters.to_dict())
 
 def write_f1_scores(f1_scores, prefix):
     __write_content(f"{prefix}-f1_scores", f1_scores)
@@ -46,16 +43,16 @@ def read_parameters(training_run_id):
     parameters = file_utils.read_evaluation_json(training_run_id, "parameters")
     return parameters
 
-def read_confusion_matrix(training_run_id):
-    confusion_matrix = file_utils.read_evaluation_json(training_run_id, "confusion_matrix")
+def read_confusion_matrix(training_run_id, prefix):
+    confusion_matrix = file_utils.read_evaluation_json(training_run_id, f"{prefix}-confusion_matrix")
     return confusion_matrix
 
 def read_dataset_stats(training_run_id):
     dataset_stats = file_utils.read_evaluation_json(training_run_id, "dataset_stats")
     return dataset_stats
 
-def read_f1_score(training_run_id):
-    f1_scores= file_utils.read_evaluation_json(training_run_id, "f1_scores")
+def read_f1_score(training_run_id, prefix):
+    f1_scores= file_utils.read_evaluation_json(training_run_id, f"{prefix}-f1_scores")
     return f1_scores
 
 def plot_loss_and_save_image(training_run_id):
@@ -69,8 +66,8 @@ def plot_loss_and_save_image(training_run_id):
     fig.savefig(f"evaluations/{training_run_id}/loss.jpg")
     return
 
-def plot_prediction_distribution(training_run_id):
-    results = file_utils.read_evaluation_json(training_run_id, "prediction_results")
+def plot_prediction_distribution(training_run_id, prefix):
+    results = file_utils.read_evaluation_json(training_run_id, f"{prefix}-prediction_results")
 
     dists = defaultdict(list)
     for result_elem in results:
@@ -85,11 +82,4 @@ def plot_prediction_distribution(training_run_id):
     ax.set_xlim(0,1)
     fig.savefig(f"evaluations/{training_run_id}/prediction_distribution.jpg")
     return
-
-
-
-
-
-
-
 

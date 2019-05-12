@@ -29,7 +29,7 @@ class ImageDataset(Dataset):
         files = []
         all_labels = []
         for string_label in self.__available_labels:
-            filepath = f"{Directories.LABEL}/{string_label}"
+            filepath = f"{self.__folder}/{string_label}"
             filepaths, filelabels = self.__get_image_file_paths_and_label(filepath, string_label)
             files.extend(filepaths)
             all_labels.extend(filelabels)

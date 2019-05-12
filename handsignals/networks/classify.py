@@ -25,7 +25,7 @@ def setup_model():
         labels = file_utils.get_labels()
         number_of_classes = len(labels)
         conv_model = ConvNet(number_of_classes)
-        conv_model.load
+        conv_model.load("torch.model")
 
         model = conv_model
 

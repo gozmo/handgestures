@@ -11,11 +11,12 @@ class EvaluationResults:
     def add_image(self, name, image_filename):
         self.images[name] = image_filename
 
-    def add_dictionary(self, name, dictionary, header_key_name_ header_value_name):
+    def add_dictionary(self, name, dictionary, header_key_name, header_value_name):
         elem = {"dict": dictionary,
                 "header_key_name": header_key_name,
                 "header_value_name": header_value_name}
         self.dicts[name] = elem
+        print(self.dicts)
 
     def add_label_order(self, label_order):
         self.label_order = label_order
@@ -24,5 +25,5 @@ class EvaluationResults:
         self.parameters = parameters
 
     def add_dataset_stats(self, data_stats):
-        self.dataset_stats = data_stats)
+        self.dataset_stats = data_stats
 

@@ -17,6 +17,9 @@ from handsignals.networks.classify import classify_image
 from handsignals.networks.classify import setup_model
 from handsignals.evaluate import evaluate_io
 from handsignals.evaluate.evaluate_model import evaluate_model as evaluate_network
+from handsignals.core.types import EvaluationResults
+from handsignals.core.types import ModelParameters
+
 
 WIDTH = 640
 HEIGHT = 400
@@ -32,8 +35,12 @@ def read_images(filepath):
     return send_from_directory(folder_path, filename)
 
 def train(*args, **kwargs):
+    model_parameters = ModelParameters(kwargs["learning_rate"],
+                                       kwargs["epochs"],
+                                       kwargs["batch_size"],
+                                       kwargs["resume"])
     train = trainer.train
-    training_thread = Thread(target=train, kwargs=kwargs)
+    training_thread = Thread(target=train, kwargs={"model_parameters":model_parameters})
     training_thread.start()
 
 
@@ -104,19 +111,23 @@ def results(user_selected_training_run_id):
     results.add_image("loss", "loss.jpg")
 
     results.add_matrix("holdout_confusion_matrix",
-                       evaluate_io.read_confusion_matrix(training_run_id, "holdout")
+                       evaluate_io.read_confusion_matrix(training_run_id, "holdout"))
     evaluate_io.plot_prediction_distribution(training_run_id, "holdout")
-    results.add_image("holdout_prediction_distribution")
-    results.add_matrix("f1_holdout",
-                       evaluate_io.read_f1_score(training_run_id, "holdout"))
+    results.add_image("Holdout Prediction Distribution", "holdout_prediction_distribution")
+    results.add_dictionary("f1_holdout",
+                       evaluate_io.read_f1_score(training_run_id, "holdout"),
+                       None,
+                       None)
 
 
 
     results.add_matrix("labeled_confusion_matrix", evaluate_io.read_confusion_matrix(training_run_id, "labeled"))
     evaluate_io.plot_prediction_distribution(training_run_id, "labeled")
-    results.add_image("labeled_prediction_distribution")
-    results.add_matrix("f1_labeled",
-                       evaluate_io.read_f1_score(training_run_id, "labeled"))
+    results.add_image("Label Prediction Distribution", "labeled_prediction_distribution")
+    results.add_dictionary("f1_labeled",
+                       evaluate_io.read_f1_score(training_run_id, "labeled"),
+                       None,
+                       None)
 
     return training_runs, results
 

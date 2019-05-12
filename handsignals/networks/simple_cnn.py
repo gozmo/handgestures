@@ -17,19 +17,17 @@ class ConvNet:
 
     def train(self, 
               dataset, 
-              epochs,
-              batch_size,
-              learning_rate):
-        dataloader = DataLoader(dataset, batch_size=batch_size, shuffle=True)
+              model_parameters):
+        dataloader = DataLoader(dataset, batch_size=model_parameters.batch_size, shuffle=True)
         optimizer = Adam(self.cnn_model.parameters(),
-                lr=learning_rate)
+                lr=model_parameters.learning_rate)
         loss = BCEWithLogitsLoss(reduce="sum")
         self.cnn_model.to(device)
         trained_model, validation_loss, training_loss= train_model(self.cnn_model,
                 dataloader,
                 loss,
                 optimizer,
-                epochs)
+                model_parameters.epochs)
         self.cnn_model = trained_model
         return validation_loss, training_loss
 
