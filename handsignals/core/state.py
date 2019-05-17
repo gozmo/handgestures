@@ -28,8 +28,17 @@ class GlobalState:
     def training_run_folder(self):
         return f"evaluations/{self.__training_run_id}"
 
+    def get_model(self):
+        return
+
 __global_state = GlobalState()
 
 def get_global_state():
+    global __global_state
+    return __global_state
+
+
+@property
+def state():
     global __global_state
     return __global_state

@@ -3,92 +3,93 @@ import copy
 import torch
 import numpy as np
 from handsignals import device
+from handsignals.evaluate import evaluate_model, evaluate_io
 
-def train_model(model, dataloader, criterion, optimizer, num_epochs, is_inception=False):
 
-    since = time.time()
+def train_model(model,
+                model_parameters,
+                training_dataset,
+                holdout_dataset,
+                criterion,
+                optimizer):
 
-    val_acc_history = []
-    val_loss_history = []
-
-    train_acc_history = []
-    train_loss_history = []
+    start_time = time.time()
 
     best_model_wts = copy.deepcopy(model.state_dict())
-    best_acc = 0.0
+    best_f1 = 0.0
+    dataloader_training_set = training_dataset.get_dataloader(model_parameters.batch_size, shuffle=True)
 
-    for epoch in range(num_epochs):
-        print('Epoch {}/{}'.format(epoch, num_epochs - 1))
+    for epoch in range(model_parameters.epochs):
+        print('Epoch {}/{}'.format(epoch, model_parameters.epochs - 1))
+        epoch_start_time = time.time()
+
+        ###
+        ### Training step
+        ###
+        model.train()
+        running_loss = 0.0
+
+        for batch in dataloader_training_set:
+
+            images = batch["image"]
+            labels = batch["label"]
+
+            image_input = torch.from_numpy(np.array(images))
+            labels_input = torch.from_numpy(np.array(labels))
+
+            image_input = image_input.to(device)
+            labels_input = labels_input.to(device)
+
+            # zero the parameter gradients
+            optimizer.zero_grad()
+
+            # forward
+            # track history if only in train
+            with torch.set_grad_enabled(True):
+
+                outputs = model(image_input)
+                loss = criterion(outputs, labels_input)
+
+
+                # backward + optimize only if in training phase
+                loss.backward()
+                optimizer.step()
+
+            # statistics
+            running_loss += loss.item() * images.size(0)
+
+        ###
+        ### Evaluation step
+        ###
+        model.eval()
+
+        _, _, holdout_f1_scores = evaluate_model.evaluate_model_on_dateset(model, holdout_dataset)
+        _, _, labeled_f1_scores = evaluate_model.evaluate_model_on_dateset(model, training_dataset)
+
+        epoch_f1 = labeled_f1_scores["f1"]
+        evaluate_io.write_running_f1_score(epoch, epoch_f1, "holdout")
+        evaluate_io.write_running_loss(epoch, running_loss)
+
+        ###
+        ### Clean up step
+        ###
+
+        if epoch_f1 > best_f1:
+            pass
+
+        ###
+        ### Report step
+        ###
+        epoch_time_elapsed = time.time() - epoch_start_time
+        time_elapsed = time.time() - start_time
+        print(f"Epoch completed in: {epoch_time_elapsed}")
+        print(f"Training time: {time_elapsed}")
+        print(f"Loss: {running_loss}")
+        print(f"Epoch f1: {epoch_f1}")
         print('-' * 10)
 
-        # Each epoch has a training and validation phase
-        for phase in ['train', 'val']:
-            if phase == 'train':
-                model.train()  # Set model to training mode
-            else:
-                model.eval()   # Set model to evaluate mode
-
-            running_loss = 0.0
-            running_corrects = 0
-
-            for batch in dataloader:
-
-                images = batch["image"]
-                labels = batch["label"]
-
-                image_input = torch.from_numpy(np.array(images))
-                labels_input = torch.from_numpy(np.array(labels))
-
-                image_input = image_input.to(device)
-                labels_input = labels_input.to(device)
-
-                # zero the parameter gradients
-                optimizer.zero_grad()
-
-                # forward
-                # track history if only in train
-                with torch.set_grad_enabled(phase == 'train'):
-
-                    outputs = model(image_input)
-                    loss = criterion(outputs, labels_input)
-
-                    _, preds = torch.max(outputs, 1)
-
-                    # backward + optimize only if in training phase
-                    if phase == 'train':
-                        loss.backward()
-                        optimizer.step()
-
-                # statistics
-                running_loss += loss.item() * images.size(0)
-                _, correct = torch.max(labels.data, 1)
-                preds = preds.to(device)
-                correct = correct.to(device)
-                running_corrects += torch.sum(preds == correct)
-
-            epoch_loss = running_loss / len(dataloader.dataset)
-            epoch_acc = running_corrects.double() / len(dataloader.dataset)
-
-            print('{} Loss: {:.4f} Acc: {:.4f}'.format(phase, epoch_loss, epoch_acc))
-
-            # deep copy the model
-            if phase == 'val' and epoch_acc > best_acc:
-                best_acc = epoch_acc
-                best_model_wts = copy.deepcopy(model.state_dict())
-            if phase == 'val':
-                val_acc_history.append(epoch_acc)
-                val_loss_history.append(epoch_loss)
-            elif phase == "train":
-                train_acc_history.append(epoch_acc)
-                train_loss_history.append(epoch_loss)
-
-        print()
-
-    time_elapsed = time.time() - since
+    time_elapsed = time.time() - start_time
     print('Training complete in {:.0f}m {:.0f}s'.format(time_elapsed // 60, time_elapsed % 60))
-    print('Best val Acc: {:4f}'.format(best_acc))
-
-    # load best model weights
     model.load_state_dict(best_model_wts)
-    return model, val_loss_history, train_loss_history
+    #return model, val_loss_history, train_loss_history
 

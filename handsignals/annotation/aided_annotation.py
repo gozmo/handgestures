@@ -1,8 +1,3 @@
-from handsignals.networks.classify import setup_model
-import random
-import os
-from collections import defaultdict
-from handsignals.networks.classify import classify_dataset
 from handsignals.annotation.annotation_generator import generate
 from handsignals.annotation.annotation_generator import AnnotationHolder
 

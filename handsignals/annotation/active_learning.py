@@ -1,14 +1,9 @@
-from handsignals.networks.classify import setup_model
-import random
-import os
-from collections import defaultdict
-from handsignals.networks.classify import classify_dataset
 from handsignals.annotation.annotation_generator import generate
 from handsignals.annotation.annotation_generator import AnnotationHolder
 
 annotation_holder = AnnotationHolder(20)
 
-def generate_query(batch_size):
+def generate_query():
     global annotation_holder
 
     if len(annotation_holder) == 0:

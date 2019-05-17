@@ -1,14 +1,15 @@
 from torch.optim import Adam
 from torch.nn import CrossEntropyLoss
 from torch.nn import BCEWithLogitsLoss
-from torch.utils.data import DataLoader
+
+from handsignals.networks.base_network import BaseNetwork
 from handsignals.networks.train_network import train_model
 from torch import nn
 import torch
 import numpy as np
 from handsignals import device
 
-class ConvNet:
+class ConvNet(BaseNetwork):
     def __init__(self, num_classes):
         self.num_classes = num_classes
         self.cnn_model = ConvNetModel(num_classes=num_classes)
@@ -16,18 +17,19 @@ class ConvNet:
         self.cnn_model.to(device)
 
     def train(self, 
-              dataset, 
+              training_dataset,
+              holdout_dataset,
               model_parameters):
-        dataloader = DataLoader(dataset, batch_size=model_parameters.batch_size, shuffle=True)
         optimizer = Adam(self.cnn_model.parameters(),
                 lr=model_parameters.learning_rate)
         loss = BCEWithLogitsLoss(reduce="sum")
         self.cnn_model.to(device)
         trained_model, validation_loss, training_loss= train_model(self.cnn_model,
-                dataloader,
-                loss,
-                optimizer,
-                model_parameters.epochs)
+                                                                   model_parameters,
+                                                                   training_dataset,
+                                                                   holdout_dataset,
+                                                                   loss,
+                                                                   optimizer)
         self.cnn_model = trained_model
         return validation_loss, training_loss
 

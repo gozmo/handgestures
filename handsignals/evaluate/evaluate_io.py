@@ -5,24 +5,29 @@ from handsignals.dataset import file_utils
 import matplotlib.pyplot as plt
 from collections import defaultdict
 
-def __write_content(filename, content):
+def __write_json_content(filename, content):
     global_state = state.get_global_state()
     training_run_id = global_state.get_training_run_id()
     json_content= json.dumps(content)
     file_utils.write_evaluation_json(training_run_id, filename, json_content)
 
+def __write_csv_content(filename, content):
+    global_state = state.get_global_state()
+    training_run_id = global_state.get_training_run_id()
+
+
 
 def write_loss(validation_loss, training_loss):
-    __write_content("training_loss", training_loss)
-    __write_content("validation_loss", validation_loss)
+    __write_json_content("training_loss", training_loss)
+    __write_json_content("validation_loss", validation_loss)
 
 def write_prediction_results(prediction_results, prefix):
     json_results = [elem.to_json() for elem in prediction_results]
 
-    __write_content(f"{prefix}-prediction_results", json_results)
+    __write_json_content(f"{prefix}-prediction_results", json_results)
 
 def write_confusion_matrix(confusion_matrix, prefix):
-    __write_content(f"{prefix}-confusion_matrix", confusion_matrix)
+    __write_json_content(f"{prefix}-confusion_matrix", confusion_matrix)
 
 def write_dataset_stats(dataset):
     label_statistics = Counter(dataset.all_labels())
@@ -31,13 +36,17 @@ def write_dataset_stats(dataset):
         "label_statistics": dict(label_statistics),
         }
 
-    __write_content("dataset_stats", dataset_statistics)
+    __write_json_content("dataset_stats", dataset_statistics)
 
 def write_parameters(model_parameters):
-    __write_content("parameters", model_parameters.to_dict())
+    __write_json_content("parameters", model_parameters.to_dict())
 
 def write_f1_scores(f1_scores, prefix):
-    __write_content(f"{prefix}-f1_scores", f1_scores)
+    __write_json_content(f"{prefix}-f1_scores", f1_scores)
+
+def write_running_f1_score(epoch, f1_score, prefix):
+    line = {"epoch": epoch, "f1": f1_scores}
+    __append_csv(prefix, line)
 
 def read_parameters(training_run_id):
     parameters = file_utils.read_evaluation_json(training_run_id, "parameters")

@@ -1,11 +1,11 @@
-from handsignals.evaluate.evaluate_io import write_loss
 from handsignals.evaluate.evaluate_io import write_prediction_results
 from handsignals.evaluate.evaluate_io import write_confusion_matrix
 from handsignals.evaluate.evaluate_io import write_f1_scores
 from handsignals.dataset import file_utils
+from handsignals.networks.classify import classify_dataset
 from handsignals.dataset.image_dataset import HoldoutDataset
 from handsignals.dataset.image_dataset import LabeledDataset
-from handsignals.networks.classify import classify_dataset
+
 
 def __calculate_precision_and_recall(working_label, labels, confusion_matrix):
     recall_sum = 0
@@ -57,9 +57,6 @@ def __calculate_f1_scores(confusion_matrix):
 
     return evaluation_score
 
-def evaluate_model_on_dataset(dataset):
-    predictions = classify_dataset(dataset)
-    return predictions
 
 def calculate_confusion_matrix(results):
     confusion_matrix = dict()
@@ -74,8 +71,8 @@ def calculate_confusion_matrix(results):
 
     return confusion_matrix
 
-def __evaluate_pipeline(dataset, name_prefix):
-    results = evaluate_model_on_dataset(dataset)
+def evaluate_model_on_dataset(model, dataset, name_prefix):
+    results = classify_dataset(model, dataset)
 
     write_prediction_results(results, name_prefix)
 
@@ -84,14 +81,15 @@ def __evaluate_pipeline(dataset, name_prefix):
 
     f1_scores = __calculate_f1_scores(confusion_matrix)
     write_f1_scores(f1_scores, name_prefix)
+    return results, confusion_matrix, f1_scores
 
-def evaluate_model():
+def evaluate_pipeline(model):
 
     # Holdout
     holdout_dataset = HoldoutDataset()
-    __evaluate_pipeline(holdout_dataset, "holdout")
+    evaluate_model_on_dataset(model, holdout_dataset, "holdout")
 
     # Labeled dataset
     labeled_dataset = LabeledDataset()
-    __evaluate_pipeline(labeled_dataset, "labeled")
+    evaluate_model_on_dataset(model, labeled_dataset, "labeled")
 

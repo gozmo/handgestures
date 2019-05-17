@@ -1,10 +1,6 @@
-from PIL import Image
-from collections import defaultdict
 from flask import Flask, Response, request, abort, render_template_string, send_from_directory,render_template
-from io import StringIO
 from threading import Thread
 import os
-import random
 
 from handsignals.annotation import active_learning as al
 from handsignals.annotation import aided_annotation as aa
@@ -12,13 +8,12 @@ from handsignals.camera.frame_handling import FrameHandling
 from handsignals.constants import Labels
 from handsignals.dataset import file_utils
 from handsignals.networks import trainer
-from handsignals.networks.classify import classify_dataset
 from handsignals.networks.classify import classify_image
-from handsignals.networks.classify import setup_model
 from handsignals.evaluate import evaluate_io
-from handsignals.evaluate.evaluate_model import evaluate_model as evaluate_network
+from handsignals.evaluate.evaluate_model import evaluate_pipeline as evaluate_network
 from handsignals.core.types import EvaluationResults
 from handsignals.core.types import ModelParameters
+from handsignals.core.state import state
 
 
 WIDTH = 640
@@ -79,12 +74,12 @@ def start_live_view():
 def live_view():
     global live_view_active
     if live_view_active:
-        setup_model()
+        model = state.get_application_model()
         frame_handling = FrameHandling()
         files = frame_handling.collect_data(1)
         image_path= files[0]
         image = file_utils.read_image(image_path)
-        classification = classify_image(image)
+        classification = classify_image(model, image)
         image_filename= os.path.basename(image_path)
 
     else:

@@ -3,7 +3,7 @@ import random
 import cv2
 import os
 import numpy as np
-from torch.utils.data import Dataset
+from torch.utils.data import Dataset, DataLoader
 from handsignals.constants import Directories
 from handsignals.constants import Labels
 from handsignals.dataset import file_utils
@@ -93,6 +93,9 @@ class ImageDataset(Dataset):
     def subdataset(self, indices):
         sub_files = [self.__files[i] for i in indices]
         return ImageDataset(sub_files)
+
+    def get_dataloader(self, batch_size=32, shuffle=True):
+        return DataLoader(self, batch_size=batch_size, shuffle=shuffle)
 
 class UnlabeledDataset(ImageDataset):
     def __init__(self):
