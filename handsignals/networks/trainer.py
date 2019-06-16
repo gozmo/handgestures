@@ -29,6 +29,6 @@ def train(model_parameters):
     conv_model.save("./torch.model")
 
     evaluate_io.write_loss(validation_loss, training_loss)
-    del conv_model
 
-    evaluate_pipeline()
+    evaluate_pipeline(conv_model)
+    del conv_model

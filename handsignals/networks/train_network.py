@@ -63,8 +63,9 @@ def train_model(model,
         ###
         model.eval()
 
-        _, _, holdout_f1_scores = evaluate_model.evaluate_model_on_dataset(model, holdout_dataset, "holdout")
-        _, _, labeled_f1_scores = evaluate_model.evaluate_model_on_dataset(model, training_dataset, "training")
+        model_to_eval = ConvNet(len(training_dataset.get_labels), model)
+        _, _, holdout_f1_scores = evaluate_model.evaluate_model_on_dataset(model_to_eval, holdout_dataset, "holdout")
+        _, _, labeled_f1_scores = evaluate_model.evaluate_model_on_dataset(model_to_eval, training_dataset, "training")
 
         epoch_f1 = labeled_f1_scores["f1"]
         evaluate_io.write_running_f1_score(epoch, epoch_f1, "holdout")

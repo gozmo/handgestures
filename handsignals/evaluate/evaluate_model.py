@@ -2,9 +2,9 @@ from handsignals.evaluate.evaluate_io import write_prediction_results
 from handsignals.evaluate.evaluate_io import write_confusion_matrix
 from handsignals.evaluate.evaluate_io import write_f1_scores
 from handsignals.dataset import file_utils
-from handsignals.networks.classify import classify_dataset
 from handsignals.dataset.image_dataset import HoldoutDataset
 from handsignals.dataset.image_dataset import LabeledDataset
+from handsignals.dataset.image_dataset import ImageDataset
 
 
 def __calculate_precision_and_recall(working_label, labels, confusion_matrix):
@@ -72,7 +72,7 @@ def calculate_confusion_matrix(results):
     return confusion_matrix
 
 def evaluate_model_on_dataset(model, dataset, name_prefix):
-    results = classify_dataset(model, dataset)
+    results = model.classify_dataset(dataset)
 
     write_prediction_results(results, name_prefix)
 

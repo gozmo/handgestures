@@ -12,48 +12,29 @@ from handsignals import device
 class ConvNet(BaseNetwork):
     def __init__(self, num_classes):
         self.num_classes = num_classes
-        self.cnn_model = ConvNetModel(num_classes=num_classes)
-        self.cnn_model.double()
-        self.cnn_model.to(device)
+        self.__model = ConvNetModel(num_classes=num_classes)
+        super().__init__(self.__model)
 
-    def train(self, 
+    def train(self,
               training_dataset,
               holdout_dataset,
               model_parameters):
-        optimizer = Adam(self.cnn_model.parameters(),
-                lr=model_parameters.learning_rate)
+        optimizer = Adam(self.__model.parameters(),
+                         lr=model_parameters.learning_rate)
         loss = BCEWithLogitsLoss(reduce="sum")
-        self.cnn_model.to(device)
-        trained_model, validation_loss, training_loss= train_model(self.cnn_model,
-                                                                   model_parameters,
+        trained_model, validation_loss, training_loss= self.train_model(model_parameters,
                                                                    training_dataset,
                                                                    holdout_dataset,
                                                                    loss,
                                                                    optimizer)
-        self.cnn_model = trained_model
+        self.__model = trained_model
         return validation_loss, training_loss
 
-    def classify(self, image):
-        image = np.asarray([image])
-        image_torch = torch.from_numpy(image)
-        image_torch = image_torch.to(device)
-        return self.cnn_model(image_torch)
-
-    def classify_batch(self, batch):
-        images = np.asarray(batch)
-        images_torch = torch.from_numpy(images)
-        images_torch = images_torch.to(device)
-        return self.cnn_model(images_torch)
-
-
-    def save(self, path):
-        torch.save(self.cnn_model.state_dict(), path)
-
     def load(self, path):
-        self.cnn_model = ConvNetModel(self.num_classes)
-        self.cnn_model.load_state_dict(torch.load(path))
-        self.cnn_model.double()
-        self.cnn_model.to(device)
+        self.__model = ConvNetModel(self.num_classes)
+        self.__model.load_state_dict(torch.load(path))
+        self.__model.double()
+        self.__model.to(device)
 
 class ConvNetModel(nn.Module):
     def __init__(self, num_classes=10):

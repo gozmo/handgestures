@@ -1,6 +1,5 @@
 from handsignals.dataset.image_dataset import UnlabeledDataset
 import os
-from handsignals.networks.classify import classify_dataset
 from handsignals.constants import Event
 from handsignals.core import events
 from handsignals.core.state import state
@@ -11,7 +10,7 @@ def generate(score_key):
 
     dataset = UnlabeledDataset()
 
-    predictions = classify_dataset(model, dataset)
+    predictions = model.classify_dataset(dataset)
 
     predictions_and_data = zip(predictions, dataset)
     predictions_and_data = sorted(predictions_and_data, key=score_key)

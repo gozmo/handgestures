@@ -8,7 +8,6 @@ from handsignals.camera.frame_handling import FrameHandling
 from handsignals.constants import Labels
 from handsignals.dataset import file_utils
 from handsignals.networks import trainer
-from handsignals.networks.classify import classify_image
 from handsignals.evaluate import evaluate_io
 from handsignals.evaluate.evaluate_model import evaluate_pipeline as evaluate_network
 from handsignals.core.types import EvaluationResults
@@ -79,7 +78,7 @@ def live_view():
         files = frame_handling.collect_data(1)
         image_path= files[0]
         image = file_utils.read_image(image_path)
-        classification = classify_image(model, image)
+        classification = model.classify_image(image)
         image_filename= os.path.basename(image_path)
 
     else:
