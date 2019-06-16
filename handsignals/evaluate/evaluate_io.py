@@ -15,7 +15,7 @@ def __write_csv_content(filename, content):
     global_state = state.get_global_state()
     training_run_id = global_state.get_training_run_id()
 
-
+    file_utils.write_evaluation_csv(training_run_id, filename, content)
 
 def write_loss(validation_loss, training_loss):
     __write_json_content("training_loss", training_loss)
@@ -44,9 +44,9 @@ def write_parameters(model_parameters):
 def write_f1_scores(f1_scores, prefix):
     __write_json_content(f"{prefix}-f1_scores", f1_scores)
 
-def write_running_f1_score(epoch, f1_score, prefix):
+def write_running_f1_score(epoch, f1_scores, filename):
     line = {"epoch": epoch, "f1": f1_scores}
-    __append_csv(prefix, line)
+    __write_csv_content(filename, line)
 
 def read_parameters(training_run_id):
     parameters = file_utils.read_evaluation_json(training_run_id, "parameters")

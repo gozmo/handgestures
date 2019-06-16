@@ -1,5 +1,3 @@
-import tensorflow as tf
-
 class Directories:
     UNLABEL = "dataset/unlabeled"
     LABEL = "dataset/labeled"

@@ -3,6 +3,7 @@ import random
 import cv2
 import os
 import json
+import csv
 import numpy as np
 import shutil
 from os import path
@@ -110,3 +111,9 @@ def get_training_runs():
     training_runs = os.listdir("evaluations")
     return training_runs
 
+def write_evaluation_csv(training_run_id, filename, content: dict):
+    path = f"evaluations/{training_run_id}/{filename}.csv"
+    with open(path, "a") as f:
+        dict_writer = csv.DictWriter(f, content.keys())
+        dict_writer.writeheader()
+        dict_writer.writerow(content)

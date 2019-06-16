@@ -22,13 +22,11 @@ class ConvNet(BaseNetwork):
         optimizer = Adam(self.__model.parameters(),
                          lr=model_parameters.learning_rate)
         loss = BCEWithLogitsLoss(reduce="sum")
-        trained_model, validation_loss, training_loss= self.train_model(model_parameters,
+        self.train_model(model_parameters,
                                                                    training_dataset,
                                                                    holdout_dataset,
                                                                    loss,
                                                                    optimizer)
-        self.__model = trained_model
-        return validation_loss, training_loss
 
     def load(self, path):
         self.__model = ConvNetModel(self.num_classes)

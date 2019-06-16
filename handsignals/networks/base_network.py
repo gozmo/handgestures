@@ -5,6 +5,7 @@ import torch
 import numpy as np
 from handsignals.evaluate import evaluate_model, evaluate_io
 from handsignals.dataset.image_dataset import ImageDataset
+from handsignals.core.types import PredictionResult
 
 class BaseNetwork:
 
@@ -72,17 +73,21 @@ class BaseNetwork:
             _, _, holdout_f1_scores = evaluate_model.evaluate_model_on_dataset(self, holdout_dataset, "holdout")
             _, _, labeled_f1_scores = evaluate_model.evaluate_model_on_dataset(self, training_dataset, "training")
 
-            epoch_f1 = labeled_f1_scores["f1"]
-            evaluate_io.write_running_f1_score(epoch, epoch_f1, "holdout")
-            evaluate_io.write_running_loss(epoch, running_loss)
+            labeled_epoch_f1 = labeled_f1_scores["f1"]
+            evaluate_io.write_running_f1_score(epoch, labeled_epoch_f1, "labeled")
+
+            holdout_epoch_f1 = holdout_f1_scores["f1"]
+            evaluate_io.write_running_f1_score(epoch, holdout_epoch_f1, "holdout")
+
+            #evaluate_io.write_running_loss(epoch, running_loss)
 
             ###
             ### Clean up step
             ###
 
-            if epoch_f1 > best_f1:
-                #save best epoch for saving best network later on
-                best_model_wts = copy.deepcopy(self.__model)
+            if labeled_epoch_f1 > best_f1:
+                best_f1 = labeled_epoch_f1
+                best_model_wts = copy.deepcopy(self.__model.state_dict())
 
             ###
             ### Report step
@@ -92,13 +97,12 @@ class BaseNetwork:
             print(f"Epoch completed in: {epoch_time_elapsed}")
             print(f"Training time: {time_elapsed}")
             print(f"Loss: {running_loss}")
-            print(f"Epoch f1: {epoch_f1}")
+            print(f"Epoch f1: {labeled_epoch_f1}")
             print('-' * 10)
 
         time_elapsed = time.time() - start_time
         print('Training complete in {:.0f}m {:.0f}s'.format(time_elapsed // 60, time_elapsed % 60))
         self.__model.load_state_dict(best_model_wts)
-        return self.__model, val_loss_history, train_loss_history
 
     def __classify(self, image):
         image = np.asarray([image])
