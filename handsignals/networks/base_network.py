@@ -97,7 +97,8 @@ class BaseNetwork:
             print(f"Epoch completed in: {epoch_time_elapsed}")
             print(f"Training time: {time_elapsed}")
             print(f"Loss: {running_loss}")
-            print(f"Epoch f1: {labeled_epoch_f1}")
+            print(f"Epoch f1, labeled: {labeled_epoch_f1}")
+            print(f"Epoch f1, holdout: {holdout_epoch_f1}")
             print('-' * 10)
 
         time_elapsed = time.time() - start_time

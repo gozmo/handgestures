@@ -1,4 +1,5 @@
 from handsignals.dataset import file_utils
+from handsignals.networks.simple_cnn import ConvNet
 class GlobalState:
     def __init__(self):
         self.__refresh_active_learning = True
@@ -30,6 +31,11 @@ class GlobalState:
 
     def get_model(self):
         return
+
+    def get_application_model(self):
+        model = ConvNet(4)
+        model.load("torch.model")
+        return model
 
 __global_state = GlobalState()
 

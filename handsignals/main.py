@@ -54,14 +54,9 @@ def annotate(annotation_dict):
         print(f"Moving {filename} to {label}")
         file_utils.move_file_to_label(filename, label)
 
-active_learning_batch_size = 30 
-def set_aided_annotation_batch_size(batch_size):
-    global active_learning_batch_size 
-    aided_batch_size = batch_size
-
 def active_learning():
     global active_learning_batch_size 
-    annotation_help = al.generate_query(active_learning_batch_size)
+    annotation_help = al.generate_query()
     all_labels = Labels.get_labels()
     return annotation_help, all_labels
 
@@ -124,7 +119,4 @@ def results(user_selected_training_run_id):
                        None)
 
     return training_runs, results
-
-def evaluate_model():
-    evaluate_network()
 

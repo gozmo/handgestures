@@ -2,11 +2,11 @@ from handsignals.dataset.image_dataset import UnlabeledDataset
 import os
 from handsignals.constants import Event
 from handsignals.core import events
-from handsignals.core.state import state
+from handsignals.core.state import get_global_state
 
 def generate(score_key):
 
-    model = state.get_application_model()
+    model = get_global_state().get_application_model()
 
     dataset = UnlabeledDataset()
 
