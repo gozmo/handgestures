@@ -21,16 +21,18 @@ class ImageDataset(Dataset):
             self.__files = self.__get_unlabeled_image_file_paths()
             self.__labels = None
         elif self.__folder == Directories.LABEL:
-            self.__files , self.__labels = self.__get_labeled_files()
+            self.__files, self.__labels = self.__get_labeled_files()
         elif self.__folder == Directories.HOLDOUT:
-            self.__files , self.__labels = self.__get_labeled_files()
+            self.__files, self.__labels = self.__get_labeled_files()
 
     def __get_labeled_files(self):
         files = []
         all_labels = []
         for string_label in self.__available_labels:
             filepath = f"{self.__folder}/{string_label}"
-            filepaths, filelabels = self.__get_image_file_paths_and_label(filepath, string_label)
+            filepaths, filelabels = self.__get_image_file_paths_and_label(
+                filepath, string_label
+            )
             files.extend(filepaths)
             all_labels.extend(filelabels)
         return files, all_labels
@@ -73,9 +75,7 @@ class ImageDataset(Dataset):
 
         image = self.__read_image(filepath)
 
-        return {"image": image,
-                "label": label_vector,
-                "filepath": filepath}
+        return {"image": image, "label": label_vector, "filepath": filepath}
 
     def __read_image(self, filepath):
         image = file_utils.read_image(filepath)
@@ -97,13 +97,16 @@ class ImageDataset(Dataset):
     def get_dataloader(self, batch_size=32, shuffle=True):
         return DataLoader(self, batch_size=batch_size, shuffle=shuffle)
 
+
 class UnlabeledDataset(ImageDataset):
     def __init__(self):
         super().__init__(Directories.UNLABEL)
 
+
 class LabeledDataset(ImageDataset):
     def __init__(self):
         super().__init__(Directories.LABEL)
+
 
 class HoldoutDataset(ImageDataset):
     def __init__(self):

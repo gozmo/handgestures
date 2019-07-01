@@ -4,6 +4,7 @@ from handsignals.annotation.annotation_generator import AnnotationHolder
 
 annotation_holder = AnnotationHolder(20)
 
+
 def annotate(aided_batch_size):
     global annotation_holder
 

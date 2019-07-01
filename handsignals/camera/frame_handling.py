@@ -4,8 +4,9 @@ import time
 from handsignals.camera.record import start_capture
 from handsignals.constants import Directories
 
+
 class FrameHandling:
-    def collect_data(self, frames = 100):
+    def collect_data(self, frames=100):
         captured_frames = start_capture(frames)
         files = self._save_frames_to_unlabel(captured_frames)
         return files

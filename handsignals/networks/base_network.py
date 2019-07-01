@@ -7,27 +7,26 @@ from handsignals.evaluate import evaluate_model, evaluate_io
 from handsignals.dataset.image_dataset import ImageDataset
 from handsignals.core.types import PredictionResult
 
-class BaseNetwork:
 
+class BaseNetwork:
     def __init__(self, model):
         self.__model = model
         self.__model.double()
         self.__model.to(device)
 
-    def train_model(self,
-                    model_parameters,
-                    training_dataset,
-                    holdout_dataset,
-                    criterion,
-                    optimizer):
+    def train_model(
+        self, model_parameters, training_dataset, holdout_dataset, criterion, optimizer
+    ):
         start_time = time.time()
 
         best_model_wts = copy.deepcopy(self.__model.state_dict())
         best_f1 = 0.0
-        dataloader_training_set = training_dataset.get_dataloader(model_parameters.batch_size, shuffle=True)
+        dataloader_training_set = training_dataset.get_dataloader(
+            model_parameters.batch_size, shuffle=True
+        )
 
         for epoch in range(model_parameters.epochs):
-            print('Epoch {}/{}'.format(epoch, model_parameters.epochs - 1))
+            print("Epoch {}/{}".format(epoch, model_parameters.epochs - 1))
             epoch_start_time = time.time()
 
             ###
@@ -57,7 +56,6 @@ class BaseNetwork:
                     outputs = self.__model(image_input)
                     loss = criterion(outputs, labels_input)
 
-
                     # backward + optimize only if in training phase
                     loss.backward()
                     optimizer.step()
@@ -70,8 +68,12 @@ class BaseNetwork:
             ###
             self.__model.eval()
 
-            _, _, holdout_f1_scores = evaluate_model.evaluate_model_on_dataset(self, holdout_dataset, "holdout")
-            _, _, labeled_f1_scores = evaluate_model.evaluate_model_on_dataset(self, training_dataset, "training")
+            _, _, holdout_f1_scores = evaluate_model.evaluate_model_on_dataset(
+                self, holdout_dataset, "holdout"
+            )
+            _, _, labeled_f1_scores = evaluate_model.evaluate_model_on_dataset(
+                self, training_dataset, "training"
+            )
 
             labeled_epoch_f1 = labeled_f1_scores["f1"]
             evaluate_io.write_running_f1_score(epoch, labeled_epoch_f1, "labeled")
@@ -79,7 +81,7 @@ class BaseNetwork:
             holdout_epoch_f1 = holdout_f1_scores["f1"]
             evaluate_io.write_running_f1_score(epoch, holdout_epoch_f1, "holdout")
 
-            #evaluate_io.write_running_loss(epoch, running_loss)
+            # evaluate_io.write_running_loss(epoch, running_loss)
 
             ###
             ### Clean up step
@@ -99,10 +101,14 @@ class BaseNetwork:
             print(f"Loss: {running_loss}")
             print(f"Epoch f1, labeled: {labeled_epoch_f1}")
             print(f"Epoch f1, holdout: {holdout_epoch_f1}")
-            print('-' * 10)
+            print("-" * 10)
 
         time_elapsed = time.time() - start_time
-        print('Training complete in {:.0f}m {:.0f}s'.format(time_elapsed // 60, time_elapsed % 60))
+        print(
+            "Training complete in {:.0f}m {:.0f}s".format(
+                time_elapsed // 60, time_elapsed % 60
+            )
+        )
         self.__model.load_state_dict(best_model_wts)
 
     def __classify(self, image):
@@ -127,18 +133,17 @@ class BaseNetwork:
 
         return prediction_result
 
-
     def classify_dataset(self, dataset: ImageDataset):
         predictions = []
 
         dataloader = dataset.get_dataloader()
 
         for batch in dataloader:
-            #a = torch.cuda.memory_allocated(device=device)
+            # a = torch.cuda.memory_allocated(device=device)
             images = batch["image"]
             labels = batch["label"]
 
-            prediction_distributions =  self.__classify_batch(images)
+            prediction_distributions = self.__classify_batch(images)
 
             for index in range(len(prediction_distributions)):
                 prediction_distribution = prediction_distributions[index]

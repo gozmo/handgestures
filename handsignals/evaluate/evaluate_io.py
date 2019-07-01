@@ -5,11 +5,13 @@ from handsignals.dataset import file_utils
 import matplotlib.pyplot as plt
 from collections import defaultdict
 
+
 def __write_json_content(filename, content):
     global_state = state.get_global_state()
     training_run_id = global_state.get_training_run_id()
-    json_content= json.dumps(content)
+    json_content = json.dumps(content)
     file_utils.write_evaluation_json(training_run_id, filename, json_content)
+
 
 def __write_csv_content(filename, content):
     global_state = state.get_global_state()
@@ -17,56 +19,72 @@ def __write_csv_content(filename, content):
 
     file_utils.write_evaluation_csv(training_run_id, filename, content)
 
+
 def write_loss(validation_loss, training_loss):
     __write_json_content("training_loss", training_loss)
     __write_json_content("validation_loss", validation_loss)
+
 
 def write_prediction_results(prediction_results, prefix):
     json_results = [elem.to_json() for elem in prediction_results]
 
     __write_json_content(f"{prefix}-prediction_results", json_results)
 
+
 def write_confusion_matrix(confusion_matrix, prefix):
     __write_json_content(f"{prefix}-confusion_matrix", confusion_matrix)
+
 
 def write_dataset_stats(dataset):
     label_statistics = Counter(dataset.all_labels())
     dataset_statistics = {
         "dataset_size": len(dataset),
         "label_statistics": dict(label_statistics),
-        }
+    }
 
     __write_json_content("dataset_stats", dataset_statistics)
+
 
 def write_parameters(model_parameters):
     __write_json_content("parameters", model_parameters.to_dict())
 
+
 def write_f1_scores(f1_scores, prefix):
     __write_json_content(f"{prefix}-f1_scores", f1_scores)
+
 
 def write_running_f1_score(epoch, f1_scores, filename):
     line = {"epoch": epoch, "f1": f1_scores}
     __write_csv_content(filename, line)
 
+
 def read_parameters(training_run_id):
     parameters = file_utils.read_evaluation_json(training_run_id, "parameters")
     return parameters
 
+
 def read_confusion_matrix(training_run_id, prefix):
-    confusion_matrix = file_utils.read_evaluation_json(training_run_id, f"{prefix}-confusion_matrix")
+    confusion_matrix = file_utils.read_evaluation_json(
+        training_run_id, f"{prefix}-confusion_matrix"
+    )
     return confusion_matrix
+
 
 def read_dataset_stats(training_run_id):
     dataset_stats = file_utils.read_evaluation_json(training_run_id, "dataset_stats")
     return dataset_stats
 
+
 def read_f1_score(training_run_id, prefix):
-    f1_scores= file_utils.read_evaluation_json(training_run_id, f"{prefix}-f1_scores")
+    f1_scores = file_utils.read_evaluation_json(training_run_id, f"{prefix}-f1_scores")
     return f1_scores
 
+
 def plot_loss_and_save_image(training_run_id):
-    training_loss= file_utils.read_evaluation_json(training_run_id, "training_loss")
-    validation_loss = file_utils.read_evaluation_json(training_run_id, "validation_loss")
+    training_loss = file_utils.read_evaluation_json(training_run_id, "training_loss")
+    validation_loss = file_utils.read_evaluation_json(
+        training_run_id, "validation_loss"
+    )
 
     fig, ax = plt.subplots(nrows=1, ncols=1)
     ax.plot(training_loss, label="training")
@@ -75,12 +93,15 @@ def plot_loss_and_save_image(training_run_id):
     fig.savefig(f"evaluations/{training_run_id}/loss.jpg")
     return
 
+
 def plot_prediction_distribution(training_run_id, prefix):
-    results = file_utils.read_evaluation_json(training_run_id, f"{prefix}-prediction_results")
+    results = file_utils.read_evaluation_json(
+        training_run_id, f"{prefix}-prediction_results"
+    )
 
     dists = defaultdict(list)
     for result_elem in results:
-        for label, score in result_elem['prediction_distribution'].items():
+        for label, score in result_elem["prediction_distribution"].items():
             dists[label].append(score)
 
     fig, ax = plt.subplots(nrows=1, ncols=1)
@@ -88,7 +109,6 @@ def plot_prediction_distribution(training_run_id, prefix):
         ax.hist(dist, label=label, alpha=0.4)
 
     ax.legend()
-    ax.set_xlim(0,1)
+    ax.set_xlim(0, 1)
     fig.savefig(f"evaluations/{training_run_id}/prediction_distribution.jpg")
     return
-

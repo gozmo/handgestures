@@ -5,6 +5,7 @@ from handsignals.core import state
 from handsignals.evaluate import evaluate_io
 from handsignals.evaluate.evaluate_model import evaluate_pipeline
 
+
 def train(model_parameters):
     global_state = state.get_global_state()
     global_state.new_training_run()
@@ -19,15 +20,13 @@ def train(model_parameters):
     if model_parameters.resume:
         conv_model.load()
 
-    conv_model.train(training_dataset,
-                     holdout_dataset,
-                     model_parameters)
+    conv_model.train(training_dataset, holdout_dataset, model_parameters)
 
     path = global_state.training_run_folder()
     conv_model.save(path + "/torch.model")
     conv_model.save("./torch.model")
 
-    #evaluate_io.write_loss(validation_loss, training_loss)
+    # evaluate_io.write_loss(validation_loss, training_loss)
 
     evaluate_pipeline(conv_model)
     del conv_model

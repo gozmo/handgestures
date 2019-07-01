@@ -4,6 +4,7 @@ from handsignals.constants import Event
 from handsignals.core import events
 from handsignals.core.state import get_global_state
 
+
 def generate(score_key):
 
     model = get_global_state().get_application_model()
@@ -15,7 +16,8 @@ def generate(score_key):
     predictions_and_data = zip(predictions, dataset)
     predictions_and_data = sorted(predictions_and_data, key=score_key)
 
-    return predictions_and_data 
+    return predictions_and_data
+
 
 class AnnotationHolder:
     def __init__(self, batch_size):
@@ -27,15 +29,15 @@ class AnnotationHolder:
         self.__annotations = annotations
 
     def get_batch(self):
-        batch = self.__annotations[-self.__batch_size:]
-        self.__annotations = self.__annotations[:-self.__batch_size]
+        batch = self.__annotations[-self.__batch_size :]
+        self.__annotations = self.__annotations[: -self.__batch_size]
 
         annotations = list()
         for (prediction, entry) in batch:
             filepath = entry["filepath"]
             filename = os.path.basename(filepath)
             label = prediction.label
-            html_tuple=  (filename, prediction.prediction_distribution)
+            html_tuple = (filename, prediction.prediction_distribution)
             annotations.append(html_tuple)
         return annotations
 
@@ -47,4 +49,3 @@ class AnnotationHolder:
 
     def __len__(self):
         return len(self.__annotations)
-

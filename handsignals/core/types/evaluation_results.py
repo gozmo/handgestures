@@ -12,9 +12,11 @@ class EvaluationResults:
         self.images[name] = image_filename
 
     def add_dictionary(self, name, dictionary, header_key_name, header_value_name):
-        elem = {"dict": dictionary,
-                "header_key_name": header_key_name,
-                "header_value_name": header_value_name}
+        elem = {
+            "dict": dictionary,
+            "header_key_name": header_key_name,
+            "header_value_name": header_value_name,
+        }
         self.dicts[name] = elem
         print(self.dicts)
 
@@ -26,4 +28,3 @@ class EvaluationResults:
 
     def add_dataset_stats(self, data_stats):
         self.dataset_stats = data_stats
-

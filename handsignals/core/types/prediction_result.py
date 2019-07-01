@@ -1,7 +1,7 @@
-
 import math
 import torch
 from handsignals.constants import Labels
+
 
 class PredictionResult:
     def __init__(self, prediction_result, true_label_dist):
@@ -20,7 +20,7 @@ class PredictionResult:
         return score.item()
 
     def __get_label(self, prediction_result):
-        _, prediction_idx = torch.max(prediction_result,0)
+        _, prediction_idx = torch.max(prediction_result, 0)
         prediction_idx = prediction_idx.item()
         label = Labels.int_to_label(prediction_idx)
         return label
@@ -38,10 +38,11 @@ class PredictionResult:
         return score
 
     def to_json(self):
-        return {"score": self.score,
-                "distribution": self.distribution,
-                "prediction_distribution": self.prediction_distribution,
-                "label": self.label,
-                "active_learning_score": self.active_learning_score,
-                "true_label": self.true_label}
-
+        return {
+            "score": self.score,
+            "distribution": self.distribution,
+            "prediction_distribution": self.prediction_distribution,
+            "label": self.label,
+            "active_learning_score": self.active_learning_score,
+            "true_label": self.true_label,
+        }

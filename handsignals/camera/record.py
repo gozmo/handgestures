@@ -1,13 +1,14 @@
 import numpy as np
 import cv2
 
+
 def start_capture(frames):
     print("capturing frames")
     frames_count = 0
     captured_frames = []
 
     cap = cv2.VideoCapture(0)
-    while(frames_count < frames):
+    while frames_count < frames:
         ret, rgb_frame = cap.read()
         bw_frame = cv2.cvtColor(rgb_frame, cv2.COLOR_BGR2GRAY)
 

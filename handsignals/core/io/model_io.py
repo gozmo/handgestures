@@ -10,10 +10,12 @@ def __load_model(path: str):
 
     return conv_model
 
+
 def load_model(training_run_id):
     model = __load_model(f"evaluations/{training_run_id}/torch.model")
 
     return model
+
 
 def load_application_model():
     model = __load_model("torch.model")

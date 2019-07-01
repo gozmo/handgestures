@@ -2,20 +2,15 @@ from unittest import TestCase
 import unittest
 from handsignals import main
 
+
 class InteractionsTests(TestCase):
     @unittest.skip("skip")
     def test_training(self):
-        main.train(epochs=1,
-                   learning_rate=0.0001,
-                   batch_size=8,
-                   resume=False)
+        main.train(epochs=1, learning_rate=0.0001, batch_size=8, resume=False)
 
     @unittest.skip("skip")
     def test_resume_training(self):
-        main.train(epochs=1,
-                   learning_rate=0.0001,
-                   batch_size=8,
-                   resume=True)
+        main.train(epochs=1, learning_rate=0.0001, batch_size=8, resume=True)
 
     def test_active_learning(self):
         self._given_unlabeled_images()
@@ -35,5 +30,6 @@ class InteractionsTests(TestCase):
     @unittest.skip("skip")
     def test_annotate(self):
         self.assertTrue(False)
+
 
 unittest.main()

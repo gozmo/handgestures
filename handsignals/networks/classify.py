@@ -4,8 +4,3 @@ from handsignals.core.result import PredictionResult
 from handsignals import device
 
 import torch
-
-
-
-
-

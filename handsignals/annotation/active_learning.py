@@ -3,6 +3,7 @@ from handsignals.annotation.annotation_generator import AnnotationHolder
 
 annotation_holder = AnnotationHolder(20)
 
+
 def generate_query():
     global annotation_holder
 
@@ -15,4 +16,3 @@ def generate_query():
     batch = annotation_holder.get_batch()
 
     return batch
-

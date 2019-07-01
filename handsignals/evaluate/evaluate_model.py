@@ -29,6 +29,7 @@ def __calculate_precision_and_recall(working_label, labels, confusion_matrix):
 
     return recall, precision
 
+
 def __calculate_f1_scores(confusion_matrix):
     labels = file_utils.get_labels()
     scores = dict()
@@ -36,24 +37,23 @@ def __calculate_f1_scores(confusion_matrix):
     f1_sum = 0
 
     for label in labels:
-        recall, precision = __calculate_precision_and_recall(label, labels, confusion_matrix)
+        recall, precision = __calculate_precision_and_recall(
+            label, labels, confusion_matrix
+        )
 
         try:
             f1 = 2 * (precision * recall) / (precision + recall)
         except ZeroDivisionError:
             f1 = 0
 
-        label_scores = {"f1": f1,
-                        "recall": recall,
-                        "precision": precision}
+        label_scores = {"f1": f1, "recall": recall, "precision": precision}
         scores[label] = label_scores
 
         f1_sum += f1
 
     f1_score = f1_sum / len(labels)
 
-    evaluation_score = {"f1": f1_score,
-                        "label_f1": scores}
+    evaluation_score = {"f1": f1_score, "label_f1": scores}
 
     return evaluation_score
 
@@ -71,6 +71,7 @@ def calculate_confusion_matrix(results):
 
     return confusion_matrix
 
+
 def evaluate_model_on_dataset(model, dataset, name_prefix):
     results = model.classify_dataset(dataset)
 
@@ -83,6 +84,7 @@ def evaluate_model_on_dataset(model, dataset, name_prefix):
     write_f1_scores(f1_scores, name_prefix)
     return results, confusion_matrix, f1_scores
 
+
 def evaluate_pipeline(model):
 
     # Holdout
@@ -92,4 +94,3 @@ def evaluate_pipeline(model):
     # Labeled dataset
     labeled_dataset = LabeledDataset()
     evaluate_model_on_dataset(model, labeled_dataset, "labeled")
-

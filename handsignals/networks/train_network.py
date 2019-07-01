@@ -6,21 +6,20 @@ from handsignals import device
 from handsignals.evaluate import evaluate_model, evaluate_io
 
 
-def train_model(model,
-                model_parameters,
-                training_dataset,
-                holdout_dataset,
-                criterion,
-                optimizer):
+def train_model(
+    model, model_parameters, training_dataset, holdout_dataset, criterion, optimizer
+):
 
     start_time = time.time()
 
     best_model_wts = copy.deepcopy(model.state_dict())
     best_f1 = 0.0
-    dataloader_training_set = training_dataset.get_dataloader(model_parameters.batch_size, shuffle=True)
+    dataloader_training_set = training_dataset.get_dataloader(
+        model_parameters.batch_size, shuffle=True
+    )
 
     for epoch in range(model_parameters.epochs):
-        print('Epoch {}/{}'.format(epoch, model_parameters.epochs - 1))
+        print("Epoch {}/{}".format(epoch, model_parameters.epochs - 1))
         epoch_start_time = time.time()
 
         ###
@@ -50,7 +49,6 @@ def train_model(model,
                 outputs = model(image_input)
                 loss = criterion(outputs, labels_input)
 
-
                 # backward + optimize only if in training phase
                 loss.backward()
                 optimizer.step()
@@ -64,8 +62,12 @@ def train_model(model,
         model.eval()
 
         model_to_eval = ConvNet(len(training_dataset.get_labels), model)
-        _, _, holdout_f1_scores = evaluate_model.evaluate_model_on_dataset(model_to_eval, holdout_dataset, "holdout")
-        _, _, labeled_f1_scores = evaluate_model.evaluate_model_on_dataset(model_to_eval, training_dataset, "training")
+        _, _, holdout_f1_scores = evaluate_model.evaluate_model_on_dataset(
+            model_to_eval, holdout_dataset, "holdout"
+        )
+        _, _, labeled_f1_scores = evaluate_model.evaluate_model_on_dataset(
+            model_to_eval, training_dataset, "training"
+        )
 
         epoch_f1 = labeled_f1_scores["f1"]
         evaluate_io.write_running_f1_score(epoch, epoch_f1, "holdout")
@@ -87,10 +89,13 @@ def train_model(model,
         print(f"Training time: {time_elapsed}")
         print(f"Loss: {running_loss}")
         print(f"Epoch f1: {epoch_f1}")
-        print('-' * 10)
+        print("-" * 10)
 
     time_elapsed = time.time() - start_time
-    print('Training complete in {:.0f}m {:.0f}s'.format(time_elapsed // 60, time_elapsed % 60))
+    print(
+        "Training complete in {:.0f}m {:.0f}s".format(
+            time_elapsed // 60, time_elapsed % 60
+        )
+    )
     model.load_state_dict(best_model_wts)
-    #return model, val_loss_history, train_loss_history
-
+    # return model, val_loss_history, train_loss_history

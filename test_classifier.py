@@ -7,10 +7,10 @@ import numpy as np
 import torch
 
 dataset = ImageDataset()
-indices = [random.randint(0,len(dataset)) for x in range(20)]
+indices = [random.randint(0, len(dataset)) for x in range(20)]
 
 
-#a = AlexNet(dataset.num_classes())
+# a = AlexNet(dataset.num_classes())
 a = ConvNet(dataset.num_classes())
 a.train(dataset)
 
@@ -19,10 +19,14 @@ for x in indices:
     image = d["image"]
     label = d["label"]
     prediction = a.classify(image)
-    _, prediction_idx = torch.max(prediction,1)
+    _, prediction_idx = torch.max(prediction, 1)
     prediction_idx = prediction_idx.data[0]
     label_idx = np.argmax(label)
-    
-    #print(label, prediction.data[0])
-    print("Label: ", Labels.int_to_label(label_idx),
-          "Predicted:", Labels.int_to_label(prediction_idx))
+
+    # print(label, prediction.data[0])
+    print(
+        "Label: ",
+        Labels.int_to_label(label_idx),
+        "Predicted:",
+        Labels.int_to_label(prediction_idx),
+    )
