@@ -47,6 +47,9 @@ def data():
 def annotate():
     return data_template.render_annotate(request)
 
+@app.route("/data/object_annotate", methods=["GET", "POST"])
+def annotate_object():
+    return data_template.render_object_annotation(request)
 
 @app.route("/data/active_learning", methods=["GET", "POST"])
 def active_learning():

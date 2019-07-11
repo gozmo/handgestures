@@ -1,7 +1,7 @@
 class Directories:
-    UNLABEL = "dataset/unlabeled"
-    LABEL = "dataset/labeled"
-    HOLDOUT = "dataset/holdout"
+    UNLABEL = "dataset/unlabeled/"
+    LABEL = "dataset/labeled/"
+    HOLDOUT = "dataset/holdout/"
 
 
 class Labels:
@@ -29,3 +29,8 @@ class Labels:
 
 class Event:
     TRAINING_DONE = "training_done"
+
+class TemplateFiles:
+    ANNOTATE = "data/annotate.html"
+    ANNOTATE_OBJECT = "data/annotate_object.html"
+

@@ -1,0 +1,9 @@
+{% extends "data/base.html" %}
+
+{% block inner_content %}
+    <link type="text/css" rel="stylesheet" href="{{url_for('static', filename='css/annotorious.css')}}" />
+    <script type="text/javascript" src="{{url_for('static', filename='annotorious.min.js')}}"></script>
+    <img src={{url_for('unlabeled', filename=image.SOURCE)}} width="{{ image.width }}" height="{{ image.height }}" class="annotatable" />
+
+{% endblock %}
+
