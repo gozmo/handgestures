@@ -32,5 +32,10 @@ class Event:
 
 class TemplateFiles:
     ANNOTATE = "data/annotate.html"
-    ANNOTATE_OBJECT = "data/annotate_object.html"
 
+class ObjectAnnotation:
+    X = "x"
+    Y = "y"
+    HEIGHT = "height"
+    WIDTH = "width"
+    LABEL = "label"
