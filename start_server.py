@@ -47,6 +47,12 @@ def data():
 def annotate():
     return data_template.render_annotate(request)
 
+@app.route("/data/add_annotated_object", methods=["POST","GET"])
+def add_annotate_object():
+    post_dict = request.form.to_dict()
+    print(post_dict)
+    return "success"
+
 @app.route("/data/object_annotate", methods=["GET", "POST"])
 def annotate_object():
     return data_template.render_object_annotation(request)

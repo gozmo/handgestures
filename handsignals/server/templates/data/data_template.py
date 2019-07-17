@@ -43,7 +43,6 @@ def render_annotate(request):
             else:
                 height = min(h, HEIGHT)
                 width = height * aspect
-            print("render_annotate", filename)
             image = SourceImage(name, int(width), int(height))
             images.append(image)
 
@@ -67,9 +66,7 @@ def render_object_annotation(request):
             else:
                 height = min(h, HEIGHT)
                 width = height * aspect
-            print("render_annotate", filename)
             image = SourceImage(name, int(width), int(height))
             images.append(image)
 
-    print(images[0])
     return render_template(TemplateFiles.ANNOTATE_OBJECT, image=images[0], labels=Labels.get_labels())

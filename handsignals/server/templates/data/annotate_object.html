@@ -1,9 +1,47 @@
 {% extends "data/base.html" %}
 
 {% block inner_content %}
-    <link type="text/css" rel="stylesheet" href="{{url_for('static', filename='css/annotorious.css')}}" />
     <script type="text/javascript" src="{{url_for('static', filename='annotorious.min.js')}}"></script>
-    <img src={{url_for('unlabeled', filename=image.SOURCE)}} width="{{ image.width }}" height="{{ image.height }}" class="annotatable" />
+    <script src="https://ajax.aspnetcdn.com/ajax/jQuery/jquery-3.4.1.min.js"></script>
+    <script>
+        function init() {
+            anno.makeAnnotatable(document.getElementById('myImage'));
+        }
+
+        anno.addHandler('onAnnotationCreated', function(annotation) {
+
+            var x = annotation.shapes[0].geometry.x
+            var y = annotation.shapes[0].geometry.y
+            var height = annotation.shapes[0].geometry.height
+            var width = annotation.shapes[0].geometry.width
+            var annotation= annotation.text;
+            var image = annotation.src;
+            var data = { annotation:annotation,
+                         image: image,
+                         x:x,
+                         y:y,
+                         width:width,
+                         height:height}
+            var url = 'http://localhost:5000/data/add_annotated_object'
+            console.log("data")
+            console.log(data)
+            console.log(url)
+            var string_data = JSON.stringify(data)
+            $.post( url , data)
+                .done(function( data ) {
+                    console.log('success')
+                    console.log(data)
+                });
+        });
+
+
+
+    </script>
+
+    <link type="text/css" rel="stylesheet" href="{{url_for('static', filename='css/annotorious.css')}}" />
+    <img src={{url_for('unlabeled', filename=image.SOURCE)}} width="{{ image.width }}" height="{{ image.height }}" id="myImage" onload="init();"/>
+
+
 
 {% endblock %}
 
