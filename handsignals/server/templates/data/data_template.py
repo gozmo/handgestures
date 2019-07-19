@@ -20,25 +20,23 @@ from handsignals.core.types.source_image import SourceImage
 WIDTH = 640
 HEIGHT = 400
 
-def render_object_annotation(request):
+def render_annotation(request):
     images = []
 
-    for root, dirs, files in os.walk(Directories.UNLABEL):
-        files = sorted(files)
-        files = files[0:1]
-        for filename, name in [(os.path.join(root, name), name) for name in files]:
-            if not filename.endswith(".jpg"):
-                continue
-            im = Image.open(filename)
-            w, h = im.size
-            aspect = 1.0 * w / h
-            if aspect > 1.0 * WIDTH / HEIGHT:
-                width = min(w, WIDTH)
-                height = width / aspect
-            else:
-                height = min(h, HEIGHT)
-                width = height * aspect
-            image = SourceImage(name, int(width), int(height))
-            images.append(image)
+    unlabeled_files = os.listdir(Directories.UNLABEL)
+    unlabeled_files = sorted(unlabeled_files)
+    first_file = unlabeled_files[0]
+    image_path = os.path.join(Directories.UNLABEL, first_file)
 
-    return render_template(TemplateFiles.ANNOTATE, image=images[0])
+    im = Image.open(image_path)
+    w, h = im.size
+    aspect = 1.0 * w / h
+    if aspect > 1.0 * WIDTH / HEIGHT:
+        width = min(w, WIDTH)
+        height = width / aspect
+    else:
+        height = min(h, HEIGHT)
+        width = height * aspect
+    image = SourceImage(image_path, int(width), int(height))
+
+    return render_template(TemplateFiles.ANNOTATE, image=image)

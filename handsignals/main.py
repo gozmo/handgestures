@@ -21,6 +21,7 @@ from handsignals.evaluate.evaluate_model import evaluate_pipeline as evaluate_ne
 from handsignals.core.types import EvaluationResults
 from handsignals.core.types import ModelParameters
 from handsignals.core.state import state
+from handsignals.annotation.image_annotations import ImageAnnotations
 
 
 WIDTH = 640
@@ -54,35 +55,20 @@ def train(*args, **kwargs):
     training_thread.start()
 
 
-aided_batch_size = 50
-
-
-def set_aided_annotation_batch_size(batch_size):
-    global aided_batch_size
-    aided_batch_size = batch_size
-
-
-def aided_annotation():
-    annotation_help = aa.annotate(aided_batch_size)
-    all_labels = Labels.get_labels()
-    return annotation_help, all_labels
-
-
 def annotate(annotation_dict):
-    for filename, label in annotation_dict.items():
-        print(f"Moving {filename} to {label}")
-        file_utils.move_file_to_label(filename, label)
+    if file_utils.is_unlabeled(annotation_dict[Annotation.IMAGE]):
+        file_utils.move_file_to_label(annotation_dict[Annotation.IMAGE], 
+                                      Directories.LABELED)
 
-
-def active_learning():
-    global active_learning_batch_size
-    annotation_help = al.generate_query()
-    all_labels = Labels.get_labels()
-    return annotation_help, all_labels
-
+    image_annotations = ImageAnnotations(annotation_dict[Annotation.IMAGE])
+    image_annotations.add_annotation(annotation_dict[Annotation.X],
+                                     annotation_dict[Annotation.Y],
+                                     annotation_dict[Annotation.HEIGHT],
+                                     annotation_dict[Annotation.WIDTH],
+                                     annotation_dict[Annotation.LABEL])
+    image_annotation.write_annotations()
 
 live_view_active = False
-
 
 def start_live_view():
     global live_view_active

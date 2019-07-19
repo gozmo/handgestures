@@ -4,6 +4,7 @@ class Directories:
     HOLDOUT = "dataset/holdout/"
 
 
+
 class Labels:
     victory = "victory"
     metal = "metal"
@@ -33,7 +34,7 @@ class Event:
 class TemplateFiles:
     ANNOTATE = "data/annotate.html"
 
-class ObjectAnnotation:
+class ImageAnnotation:
     X = "x"
     Y = "y"
     HEIGHT = "height"

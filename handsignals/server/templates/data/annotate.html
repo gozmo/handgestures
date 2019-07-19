@@ -39,7 +39,7 @@
     </script>
 
     <link type="text/css" rel="stylesheet" href="{{url_for('static', filename='css/annotorious.css')}}" />
-    <img src={{url_for('unlabeled', filename=image.SOURCE)}} width="{{ image.width }}" height="{{ image.height }}" id="myImage" onload="init();"/>
+    <img src={{url_for('image', filename=image.SOURCE)}} width="{{ image.width }}" height="{{ image.height }}" id="myImage" onload="init();"/>
 
 
 

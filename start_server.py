@@ -6,8 +6,8 @@ from handsignals import main
 from handsignals.server.templates.data import data_template
 
 app = Flask(
-    __name__, template_folder="handsignals/server/templates", static_url_path=""
-)
+    __name__, template_folder="handsignals/server/templates",
+    static_url_path="")
 
 
 @app.route("/index")
@@ -22,28 +22,31 @@ def index():
 def image(filename):
     return main.read_images(filename)
 
-@app.route("/unlabeled/<string:filename>")
-def unlabeled(filename):
-    filepath = f"dataset/unlabeled/{filename}"
-    return main.read_images(filepath)
-
 ###
 # Data routes
 ###
 
 @app.route("/data")
 def data():
-    return render_template(f"data/base.html")
+    return render_template("data/base.html")
 
-@app.route("/data/add_annotation", methods=["POST","GET"])
+@app.route("/data/add_annotation", methods=["POST"])
 def add_annotation():
     post_dict = request.form.to_dict()
-    print(post_dict)
+    main.annotate(post_dict)
     return "success"
+
+@app.route("/data/update_annotation", methods=["POST"])
+def update_annotation():
+    pass
+
+@app.route("/data/delete_annotation", methods=["POST"])
+def delete_annotation():
+    pass
 
 @app.route("/data/annotate", methods=["GET", "POST"])
 def annotate_object():
-    return data_template.render_object_annotation(request)
+    return data_template.render_annotation(request)
 
 ###
 # Model routes

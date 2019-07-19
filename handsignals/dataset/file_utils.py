@@ -126,3 +126,28 @@ def write_evaluation_csv(training_run_id, filename, content: dict):
         dict_writer = csv.DictWriter(f, content.keys())
         dict_writer.writeheader()
         dict_writer.writerow(content)
+
+
+###
+# Annotation functions
+###
+
+def __image_file_to_annotation_file(image_file):
+    assert "jpg" in image_file
+
+    return image_file.replace("jpg", "json")
+
+def annotation_file_exists(image_file):
+    csv_file = __image_File_to_annotation_file(image_file)
+    return os.path.isfile(csv_file)
+
+def read_annotations(image_file):
+    csv_file = __image_File_to_annotation_file(image_file)
+    path = Directories.UNLABEL
+    with open(path, "r") as f:
+        json_content = json.load(f)
+    return json_content
+
+def is_unlabeled(image_file):
+    path = Directories.UNLABEL
+    return os.path.isfile(path)
