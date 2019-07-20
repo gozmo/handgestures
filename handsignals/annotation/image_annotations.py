@@ -1,4 +1,5 @@
 from handsignals.constants import ImageAnnotation
+from handsignals.dataset import file_utils
 class ImageAnnotations:
     def __init__(self, image_filename):
         self.__image_filename = image_filename

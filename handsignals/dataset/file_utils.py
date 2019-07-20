@@ -10,35 +10,25 @@ from os import path
 import os
 from handsignals.constants import Directories
 
-LABEL_PATH = "dataset/labeled/{}"
-LABEL_IMAGE_PATH = "dataset/labeled/{}/{}"
-
-
-def _get_destination(source_path, label):
-    basename = path.basename(source_path)
-    destination = LABEL_PATH.format(label, basename)
-    return destination
-
-
-def _make_label_dir(label):
+def _make_label_dir():
     try:
-        os.makedirs(LABEL_PATH.format(label))
+        os.makedirs(Directories.LABEL)
     except FileExistsError:
         pass
 
 
-def move_image_to_label(source_path, label):
-    _make_label_dir(label)
-    destination = _get_destination(source_path, label)
+def move_image_to_label(source_path):
+    _make_label_dir()
+    destination = Directories.LABEL
     shutil.move(source_path, destination)
     print("Moved {} to {}".format(source_path, destination))
 
 
-def move_file_to_label(filename, label):
+def move_file_to_label(filename):
     for dirpath, _, filenames in os.walk("dataset"):
         if filename in filenames:
             source_file = os.path.join(dirpath, filename)
-    move_image_to_label(source_file, label)
+    move_image_to_label(source_file)
 
 
 def get_images_paths():
@@ -138,16 +128,22 @@ def __image_file_to_annotation_file(image_file):
     return image_file.replace("jpg", "json")
 
 def annotation_file_exists(image_file):
-    csv_file = __image_File_to_annotation_file(image_file)
+    csv_file = __image_file_to_annotation_file(image_file)
     return os.path.isfile(csv_file)
 
 def read_annotations(image_file):
-    csv_file = __image_File_to_annotation_file(image_file)
+    csv_file = __image_file_to_annotation_file(image_file)
     path = Directories.UNLABEL
     with open(path, "r") as f:
         json_content = json.load(f)
     return json_content
 
 def is_unlabeled(image_file):
-    path = Directories.UNLABEL
+    path = f"{Directories.UNLABEL}/{image_file}"
     return os.path.isfile(path)
+
+def write_annotations(image_filename, annotations):
+    path = f"{Directories.LABEL}/{image_filename}.json"
+    json_content = json.dumps(annotations)
+    with open(path, "w") as f:
+        f.write(json_content)

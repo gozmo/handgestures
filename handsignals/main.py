@@ -14,6 +14,8 @@ from handsignals.annotation import active_learning as al
 from handsignals.annotation import aided_annotation as aa
 from handsignals.camera.frame_handling import FrameHandling
 from handsignals.constants import Labels
+from handsignals.constants import ImageAnnotation
+from handsignals.constants import Directories
 from handsignals.dataset import file_utils
 from handsignals.networks import trainer
 from handsignals.evaluate import evaluate_io
@@ -56,17 +58,16 @@ def train(*args, **kwargs):
 
 
 def annotate(annotation_dict):
-    if file_utils.is_unlabeled(annotation_dict[Annotation.IMAGE]):
-        file_utils.move_file_to_label(annotation_dict[Annotation.IMAGE], 
-                                      Directories.LABELED)
+    if file_utils.is_unlabeled(annotation_dict[ImageAnnotation.IMAGE]):
+        file_utils.move_file_to_label(annotation_dict[ImageAnnotation.IMAGE])
 
-    image_annotations = ImageAnnotations(annotation_dict[Annotation.IMAGE])
-    image_annotations.add_annotation(annotation_dict[Annotation.X],
-                                     annotation_dict[Annotation.Y],
-                                     annotation_dict[Annotation.HEIGHT],
-                                     annotation_dict[Annotation.WIDTH],
-                                     annotation_dict[Annotation.LABEL])
-    image_annotation.write_annotations()
+    image_annotations = ImageAnnotations(annotation_dict[ImageAnnotation.IMAGE])
+    image_annotations.add_annotation(annotation_dict[ImageAnnotation.X],
+                                     annotation_dict[ImageAnnotation.Y],
+                                     annotation_dict[ImageAnnotation.HEIGHT],
+                                     annotation_dict[ImageAnnotation.WIDTH],
+                                     annotation_dict[ImageAnnotation.LABEL])
+    image_annotations.write_annotations()
 
 live_view_active = False
 

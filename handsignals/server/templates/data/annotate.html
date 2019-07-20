@@ -15,17 +15,16 @@
             var height = annotation.shapes[0].geometry.height
             var width = annotation.shapes[0].geometry.width
             var annotation= annotation.text;
-            var image = annotation.src;
-            var data = { annotation:annotation,
-                         image: image,
+            var url  = document.getElementById('myImage').src
+            var image_filename = url.substring(url.lastIndexOf('/')+1);
+            var data = { label:annotation,
+                         image: image_filename,
                          x:x,
                          y:y,
                          width:width,
                          height:height}
             var url = 'http://localhost:5000/data/add_annotation'
-            console.log("data")
             console.log(data)
-            console.log(url)
             var string_data = JSON.stringify(data)
             $.post( url , data)
                 .done(function( data ) {

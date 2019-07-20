@@ -33,6 +33,7 @@ def data():
 @app.route("/data/add_annotation", methods=["POST"])
 def add_annotation():
     post_dict = request.form.to_dict()
+    print(post_dict)
     main.annotate(post_dict)
     return "success"
 

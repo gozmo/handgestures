@@ -40,3 +40,4 @@ class ImageAnnotation:
     HEIGHT = "height"
     WIDTH = "width"
     LABEL = "label"
+    IMAGE = "image"
