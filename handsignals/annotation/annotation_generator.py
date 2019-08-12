@@ -1,6 +1,5 @@
 from handsignals.dataset.image_dataset import UnlabeledDataset
 import os
-from handsignals.constants import Event
 from handsignals.core import events
 from handsignals.core.state import get_global_state
 
@@ -21,7 +20,6 @@ def generate(score_key):
 
 class AnnotationHolder:
     def __init__(self, batch_size):
-        self.__register_callback()
         self.__batch_size = batch_size
         self.__annotations = []
 
@@ -40,9 +38,6 @@ class AnnotationHolder:
             html_tuple = (filename, prediction.prediction_distribution)
             annotations.append(html_tuple)
         return annotations
-
-    def __register_callback(self):
-        events.register_callback(Event.TRAINING_DONE, self.clear_cache)
 
     def clear_cache(self):
         self.__annotations = []

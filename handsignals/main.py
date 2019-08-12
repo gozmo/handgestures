@@ -14,7 +14,7 @@ from handsignals.annotation import active_learning as al
 from handsignals.annotation import aided_annotation as aa
 from handsignals.camera.frame_handling import FrameHandling
 from handsignals.constants import Labels
-from handsignals.constants import ImageAnnotation
+from handsignals.constants import JsonAnnotation
 from handsignals.constants import Directories
 from handsignals.dataset import file_utils
 from handsignals.networks import trainer
@@ -24,10 +24,6 @@ from handsignals.core.types import EvaluationResults
 from handsignals.core.types import ModelParameters
 from handsignals.core.state import state
 from handsignals.annotation.image_annotations import ImageAnnotations
-
-
-WIDTH = 640
-HEIGHT = 400
 
 
 def capture(frames_to_capture):
@@ -58,15 +54,15 @@ def train(*args, **kwargs):
 
 
 def annotate(annotation_dict):
-    if file_utils.is_unlabeled(annotation_dict[ImageAnnotation.IMAGE]):
-        file_utils.move_file_to_label(annotation_dict[ImageAnnotation.IMAGE])
+    if file_utils.is_unlabeled(annotation_dict[JsonAnnotation.IMAGE]):
+        file_utils.move_file_to_label(annotation_dict[JsonAnnotation.IMAGE])
 
-    image_annotations = ImageAnnotations(annotation_dict[ImageAnnotation.IMAGE])
-    image_annotations.add_annotation(annotation_dict[ImageAnnotation.X],
-                                     annotation_dict[ImageAnnotation.Y],
-                                     annotation_dict[ImageAnnotation.HEIGHT],
-                                     annotation_dict[ImageAnnotation.WIDTH],
-                                     annotation_dict[ImageAnnotation.LABEL])
+    image_annotations = ImageAnnotations(annotation_dict[JsonAnnotation.IMAGE])
+    image_annotations.add_annotation(annotation_dict[JsonAnnotation.X],
+                                     annotation_dict[JsonAnnotation.Y],
+                                     annotation_dict[JsonAnnotation.HEIGHT],
+                                     annotation_dict[JsonAnnotation.WIDTH],
+                                     annotation_dict[JsonAnnotation.LABEL])
     image_annotations.write_annotations()
 
 live_view_active = False

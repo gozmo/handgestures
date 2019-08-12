@@ -6,14 +6,15 @@ class Directories:
 
 
 class Labels:
-    victory = "victory"
-    metal = "metal"
-    ok = "ok"
-    none = "none"
+    ROCK = "rock"
+    SCISSORS = "scissors"
+    PAPER = "paper"
+    HEAD = "head"
+
 
     @staticmethod
     def get_labels():
-        return [Labels.none, Labels.ok, Labels.metal, Labels.victory]
+        return [Labels.ROCK, Labels.SCISSORS, Labels.PAPER, Labels.HEAD]
 
     @staticmethod
     def label_to_int(label):
@@ -27,17 +28,16 @@ class Labels:
         label = __labels[index]
         return label
 
-
-class Event:
-    TRAINING_DONE = "training_done"
-
 class TemplateFiles:
     ANNOTATE = "data/annotate.html"
 
-class ImageAnnotation:
+class JsonAnnotation:
     X = "x"
     Y = "y"
     HEIGHT = "height"
     WIDTH = "width"
     LABEL = "label"
+    LABELS = "labels"
     IMAGE = "image"
+    IMAGE_FILENAME = "image_filename"
+    JSON_FILENAME = "json_filename"
